@@ -1,95 +1,78 @@
 <?php
+/*
+* Name: Will Augustine
+*
+* Desctiption: PHP script to validate form for Assignment2.html
+*/
 $expected = array('sid'=>'id', 'name'=>'string', 'email'=>'email', 'age'=>'int');
 
-echo "Testing each input..." . "<br />";
 foreach ( $expected AS $key => $type ) {
-    echo "Beginning of foreach loop" . "<br />";
-    if (empty( $_GET[$key])) {
+    if (empty( $_POST[$key])) {
         echo "Key is empty!" . "<br />";
         ${$key} = NULL;
         continue;
     }
-    echo "Current type : " . $type;
     switch( $type ) {
         case 'id':
-            if (strlen($_GET[$key]) == 4) {
-                ${$key} = $_GET[$key];
+            if (strlen($_POST[$key]) != 4) {
+                ${$key} = $_POST[$key];
+                echo "Invalid ID - not four characters : " . ${$key} . "<br />";
+                break;
+            }
+            if (!preg_match("/^\d\D\D\D/", $_POST[$key])) {
+                ${$key} = $_POST[$key];
+                echo "Invalid ID - format should be 'NLLL' where N = number and L = letter!<br />";
+                break;
+            }
+            else if (strlen($_POST[$key]) == 4) {
+                ${$key} = $_POST[$key];
                 echo "Valid ID : " . ${$key} . "<br />";
             }
             break;
 
         case 'string':
-            if(!preg_match("/^[a-zA-Z]*$/", $_GET[$key])) {
-                echo "Invalid name - not alphabetic: " . ${$key} . "<br />";
+            if(!preg_match("/^[a-zA-Z]*$/", $_POST[$key])) {
+                ${$key} = $_POST[$key];
+                echo "Invalid name - not alphabetic!<br />";
                 break;
             }
-            if (strlen($_GET[$key]) > 25) {
-                echo "Invalid name - exceeds 25 characters: " . ${$key} . "<br />";
+            if (strlen($_POST[$key]) > 25) {
+                ${$key} = $_POST[$key];
+                echo "Invalid name - exceeds 25 characters!<br />";
                 break;
             }
-            echo "Valid ID : " . ${$key} . "<br />";
+            ${$key} = $_POST[$key];
+            echo "Valid name : " . ${$key} . "<br />";
             break;
 
         case 'email':
-            if (filter_var($_GET[$key], FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($_POST[$key], FILTER_VALIDATE_EMAIL)) {
+                ${$key} = $_POST[$key];
                 echo "Valid email : " . ${$key} . "<br />";
             }
+            else {
+                echo "Invalid email - incorrect format!<br />";
+            }
+            break;
+
+        case 'int':
+            if ($_POST[$key] < 16) {
+                ${$key} = $_POST[$key];
+                echo "Invalid age - must be 16 or older!<br />";
+            }
+            else if ($_POST[$key] > 100) {
+                ${$key} = $_POST[$key];
+                echo "Invalid age - must be 100 or younger!<br />";
+            }
+            else {
+                ${$key} = $_POST[$key];
+                echo "Valid age : " . ${$key} . "<br />";
+            }
+            break;
+
     }
     if (!isset(${$key})) {
         ${$key} = NULL;
     }
-
 }
-
-
-
-// // Retrieving the values of form elements 
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     $id = $_POST["sid"];
-//     $name = $_POST["name"];
-//     $email = $_POST["email"];
-//     $age = $_POST["age"];
-// }
-
-// $GLOBALS["ID_length_four"] = True;
-// $GLOBALS["ID_correct_format"] = True;
-
-// $GLOBALS["name_alphabetic"] = True;
-// $GLOBALS["name_exceed_max_length"]= False;
-
-// $GLOBALS["email_correct_format"] = True;
-
-// $GLOBALS["age_between_16_100"] = True;
-
-// function validateID($id) {
-//     if (strlen($id) > 4 or strlen($id) < 4) {
-//         $ErrMsg = "ID should be 4 characters long";
-//     }
-// }
-
-// function validateName($name) {
-//     if(!preg_match("/^[a-zA-Z]*$/", $name)) {
-//         $name_alphabetic = False;
-//     } if (strlen($name) > 25) {
-//         $name_exceed_max_length = True;
-//     } 
-
-//     if (($name_alphabetic) and !($name_exceed_max_length)) {
-//         echo "Name is set to ", $name;
-//     }
-//     else {
-//         if (!($name_alphabetic)) {
-//             $ErrMsg = "ERROR (name): Only alphabets and whitespace allowed!";
-//             echo $ErrMsg;
-//             echo "<br>";
-//         }
-//         if ($name_exceed_max_length) {
-//             $ErrMsg = "ERROR (name): Your name must be less than 25 character!\r\n";
-//             echo $ErrMsg;
-//         }
-//     }
-// };
-
-// validateID($id);
-// validateName($name);
 ?>
