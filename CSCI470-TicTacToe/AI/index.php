@@ -2,8 +2,8 @@
 session_start();
 
 // Initialize the game board
-if (!isset($_SERVER['board'])) {
-    $_SERVER['board'] = [
+if (!isset($_SESSION['board'])) {
+    $_SESSION['board'] = [
         ['', '', ''],
         ['', '', ''],
         ['', '', ''],
@@ -14,17 +14,17 @@ if (!isset($_SERVER['board'])) {
 if (isset($_POST['row']) && isset($_POST['col'])) {
     $row = $_POST['row'];
     $col = $_POST['col'];
-    $board = $_SERVER['board'];
+    $board = $_SESSION['board'];
 
     // Check if the selected cell is empty
     if ($board[$row][$col] == '') {
         // Alternate between X and O
-        $player = ($_SERVER['player'] == 'X') ? 'O' : 'X';
-        $_SERVER['player'] = $player;
+        $player = ($_SESSION['player'] == 'X') ? 'O' : 'X';
+        $_SESSION['player'] = $player;
 
         // Update the board
         $board[$row][$col] = $player;
-        $_SERVER['board'] = $board;
+        $_SESSION['board'] = $board;
     }
 }
 
@@ -57,7 +57,7 @@ function checkWinner($board) {
 }
 
 // Check for a winner
-$winner = checkWinner($_SERVER['board']);
+$winner = checkWinner($_SESSION['board']);
 
 // Render the game board
 ?>
@@ -68,13 +68,13 @@ $winner = checkWinner($_SERVER['board']);
 </head>
 <body>
     <h1>Tic Tac Toe</h1>
-    <?php if ($winner): ?>
+    <!-- <?php if ($winner): ?>
         <h2>Winner: <?php echo $winner ?></h2>
     <?php else: ?>
-        <h2>Player: <?php echo $_SERVER['player'] ?></h2>
-    <?php endif; ?>
+        <h2>Player: <?php echo $_SESSION['player'] ?></h2>
+    <?php endif; ?> -->
     <table>
-        <?php foreach ($_SERVER['board'] as $row => $cells): ?>
+        <?php foreach ($_SESSION['board'] as $row => $cells): ?>
             <tr>
                 <?php foreach ($cells as $col => $cell): ?>
                     <td>
