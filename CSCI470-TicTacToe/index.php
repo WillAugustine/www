@@ -95,10 +95,48 @@
         <?php
     }
     
+    function playerCheated($currBoard){
+        if (!isset($_SERVER['HTTP_REFERER'])) {
+            return TRUE;
+        }
+        $requestURI = $_SERVER['REQUEST_URI'];
+        $cacheControl = $_SERVER['HTTP_CACHE_CONTROL'];
+        echo "cacheControl: '" . $cacheControl . "'<br>";
+        echo $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . " VS " . $_SERVER['HTTP_REFERER'] . "<br>";
+        // if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] === $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) {
+        //     return TRUE;
+        // }
+        // if (!isset($_SERVER['HTTP_REFERER'])) {
+        //     // if ($requestURI != '') {
+        //     //     return TRUE;
+        //     // }
+        //     $prevBoard = '';
+        // }
+        $pageFrom = $_SERVER['HTTP_REFERER'];
+        $prevBoard = substr(strstr(strstr($pageFrom, '&', true), '='), 1);
+        // if (isset($_SERVER['HTTP_REFERER']) && (($requestURI != '') && ($prevBoard == ''))) {
+        //     return TRUE;
+        // }
+        echo "'" . $prevBoard . "' -> '" . $currBoard . "'<br>";
+        $numOfChanges = 0;
+        if (empty($prevBoard)) {
+            if ((substr_count($currBoard, "?") != 8) && ($requestURI != '')) {
+                return TRUE;
+            }
+            return FALSE;
+        }
+        for ($i=0 ; $i<9 ; $i++) {
+            if (($prevBoard[$i] === '?') && ($currBoard[$i] != '?')) {
+                $numOfChanges++;
+            }
+        }
+        echo "numOfChanges: " . $numOfChanges . "<br>";
+        return FALSE;
+    }
 
     if (isset($_GET['board']) && isset($_GET['row']) && isset($_GET['col'])) {
-        echo "</br>SERVER[HTTP_REFERER]: " . $_SERVER['HTTP_REFERER'] . "</br>";
-        echo "SERVER[HTTP_HOST]: " . $_SERVER['HTTP_HOST'] . "</br>";
+        // echo "</br>SERVER[HTTP_REFERER]: " . $_SERVER['HTTP_REFERER'] . "</br>";
+        // echo "SERVER[HTTP_HOST]: " . $_SERVER['HTTP_HOST'] . "</br>";
         // if (!(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != '' && strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) === false)) {
         //     echo "<br><h2>WOW! We got a cheater!</h2>";
         //     return;
@@ -106,6 +144,10 @@
         
 		$board_string = $_GET['board'];
 		$board = convertStringToBoard($board_string);
+        if (playerCheated($board_string)) {
+            echo "<font size='30'>You naughty child. No cheating!</font>";
+            return;
+        }
         $GLOBALS['board_string'] = $board_string;
 		$GLOBALS['board'] = $board;
 
@@ -137,6 +179,9 @@
         }
     }
 
+    if (substr_count($board_string, '?') === 0) {
+        echo "It's a draw!";
+    }
     if ($board_string == '?????????') {
         getComputerInput($board);
     }
