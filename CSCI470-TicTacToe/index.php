@@ -2,14 +2,22 @@
 <h1>Welcome to TicTacToe!</h1>
 
 <?php
-    // echo "SERVER[HTTP_REFERER]: " . $_SERVER["HTTP_REFERER"] . "</br>";
+    // Create board variable equal to empty board
 	$board = array(
 		array('?', '?', '?'),
 		array('?', '?', '?'),
 		array('?', '?', '?'));
 
+    // Creates singleline string representation of board variable
 	$board_string = convertBoardToString($board);
 
+    /*
+    * Checks if the current board has a winner.
+    *
+    * Input: The board to be evaluated
+    *
+    * Output: 'X' if computer won, 'O' if player won, null if no one has won yet
+    */
     function checkWinner($board) {
         // Check for a horizontal winner
         for ($row = 0; $row < 3; $row++) {
@@ -39,7 +47,13 @@
         return null;
     }
     
-
+    /*
+    * Converts a board (array of arrays) into a single-line string representation
+    *
+    * Input: The board to be converted into a string
+    *
+    * Output: The string representation of the board
+    */
 	function convertBoardToString($board) {
         $board_string = "";
         $board_string .= implode("", $board[0]);
@@ -48,6 +62,13 @@
 		return $board_string;
     }
 
+    /*
+    * Converts a single-line string representation of a board into an array of arrays board
+    *
+    * Input: The string representatino of the board to be converted into an array
+    *
+    * Output: The array representation of the board
+    */
     function convertStringToBoard($string) {
         $array = str_split($string, 3);
         $board = array(
@@ -100,24 +121,24 @@
             return TRUE;
         }
         $requestURI = $_SERVER['REQUEST_URI'];
-        $cacheControl = $_SERVER['HTTP_CACHE_CONTROL'];
-        echo "cacheControl: '" . $cacheControl . "'<br>";
-        echo $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . " VS " . $_SERVER['HTTP_REFERER'] . "<br>";
-        // if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] === $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) {
-        //     return TRUE;
-        // }
-        // if (!isset($_SERVER['HTTP_REFERER'])) {
-        //     // if ($requestURI != '') {
-        //     //     return TRUE;
-        //     // }
-        //     $prevBoard = '';
-        // }
-        $pageFrom = $_SERVER['HTTP_REFERER'];
-        $prevBoard = substr(strstr(strstr($pageFrom, '&', true), '='), 1);
-        // if (isset($_SERVER['HTTP_REFERER']) && (($requestURI != '') && ($prevBoard == ''))) {
-        //     return TRUE;
-        // }
-        echo "'" . $prevBoard . "' -> '" . $currBoard . "'<br>";
+        // $cacheControl = $_SERVER['HTTP_CACHE_CONTROL'];
+        // echo "cacheControl: '" . $cacheControl . "'<br>";
+        // echo $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] . " VS " . $_SERVER['HTTP_REFERER'] . "<br>";
+        // // if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] === $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) {
+        // //     return TRUE;
+        // // }
+        // // if (!isset($_SERVER['HTTP_REFERER'])) {
+        // //     // if ($requestURI != '') {
+        // //     //     return TRUE;
+        // //     // }
+        // //     $prevBoard = '';
+        // // }
+        // $pageFrom = $_SERVER['HTTP_REFERER'];
+        // $prevBoard = substr(strstr(strstr($pageFrom, '&', true), '='), 1);
+        // // if (isset($_SERVER['HTTP_REFERER']) && (($requestURI != '') && ($prevBoard == ''))) {
+        // //     return TRUE;
+        // // }
+        // echo "'" . $prevBoard . "' -> '" . $currBoard . "'<br>";
         $numOfChanges = 0;
         if (empty($prevBoard)) {
             if ((substr_count($currBoard, "?") != 8) && ($requestURI != '')) {
