@@ -1,4 +1,20 @@
 <?php
+$servername = "localhost";
+$username = "root";
+$password = "LOLzies101";
+
+$conn = new mysqli($servername, $username, $password);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$sql = "CREATE DATABASE IF NOT EXISTS test_user";
+if ($conn->query($sql) === TRUE) {
+    // echo "Database created successfully";
+} else {
+    echo "Error creating database: " . $conn->error;
+}
+$conn->close();
+
 //echo sha1('aslam');
 if (isset($_REQUEST['attempt']))
 {

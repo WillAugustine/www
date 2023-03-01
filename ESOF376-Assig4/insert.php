@@ -43,36 +43,37 @@ $servername = "localhost";
 $username = "root";
 $password = "LOLzies101";
 $dbname = "enrollment";
+
+$conn = new mysqli($servername, $username, $password);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$sql = "CREATE DATABASE IF NOT EXISTS enrollment";
+if ($conn->query($sql) === TRUE) {
+    // echo "Database created successfully";
+} else {
+    echo "Error creating database: " . $conn->error;
+}
+$conn->close();
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
-
 $sql = "CREATE TABLE IF NOT EXISTS personalinfo (
     id VARCHAR(4) NOT NULL UNIQUE,
     name VARCHAR(25) NOT NULL,
-    email VARCHAR(),
+    email VARCHAR(255),
     age INT(3),
-    createdBy VARCHAR(),
+    createdBy VARCHAR(255),
     PRIMARY KEY (id)
 )";
-// $id_field = "`id` VARCHAR(4)";
-// $name_field = "`name` VARCHAR(25)";
-// $email_field = "`email` VARCHAR";
-// $age_field = "`age` INT(3)"; 
-// $sql->bind_param('ssss', $id_field, $name_field, $email_field, $age_field);
-$result = mysqli_query($conn, $sql);
-// echo "Result: '$result'";
-// if ($result != '') {
-//     echo "Table created! <br>";
-// } else {
-//     echo "Error: " . $result . "<br>";
-// }
-
-$valid_id = NULL;
-$valid_name = NULL;
-$valid_email = NULL;
-$valid_age = NULL;
+if ($conn->query($sql) === TRUE) {
+    // echo "Database created successfully";
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+$conn->close();
 
 $expected = array('sid'=>'id', 'name'=>'string', 'email'=>'email', 'age'=>'int');
 if (isset($_POST['sid'], $_POST['name'], $_POST['email'], $_POST['age'])) {
@@ -101,7 +102,7 @@ if (isset($_POST['sid'], $_POST['name'], $_POST['email'], $_POST['age'])) {
                 }
                 else if (strlen($_POST[$key]) == 4) {
                     ${$key} = $_POST[$key];
-                    echo "Valid ID : " . ${$key} . "<br />";
+                    // echo "Valid ID : " . ${$key} . "<br />";
                     $valid_id = ${$key};
                 }
                 break;
@@ -118,14 +119,14 @@ if (isset($_POST['sid'], $_POST['name'], $_POST['email'], $_POST['age'])) {
                     break;
                 }
                 ${$key} = $_POST[$key];
-                echo "Valid name : " . ${$key} . "<br />";
+                // echo "Valid name : " . ${$key} . "<br />";
                 $valid_name = ${$key};
                 break;
 
             case 'email':
                 if (filter_var($_POST[$key], FILTER_VALIDATE_EMAIL)) {
                     ${$key} = $_POST[$key];
-                    echo "Valid email : " . ${$key} . "<br />";
+                    // echo "Valid email : " . ${$key} . "<br />";
                     $valid_email = ${$key};
                 }
                 else {
@@ -144,7 +145,7 @@ if (isset($_POST['sid'], $_POST['name'], $_POST['email'], $_POST['age'])) {
                 }
                 else {
                     ${$key} = $_POST[$key];
-                    echo "Valid age : " . ${$key} . "<br /><br />";
+                    // echo "Valid age : " . ${$key} . "<br /><br />";
                     $valid_age = ${$key};
                 }
                 break;
