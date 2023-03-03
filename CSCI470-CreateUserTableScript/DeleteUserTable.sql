@@ -1,0 +1,4 @@
+USE UserTableAssignDB;
+START TRANSACTION;
+DROP TABLE tbl_users;
+COMMIT;
