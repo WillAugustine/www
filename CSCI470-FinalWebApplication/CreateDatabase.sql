@@ -1,5 +1,10 @@
 CREATE DATABASE IF NOT EXISTS CemeteryLocatorApplication;
 
+CREATE USER ButteArchives@localhost IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON CemeteryLocatorApplication.* TO ButteArchives@localhost;
+FLUSH PRIVILEGES;
+
+
 USE CemeteryLocatorApplication;
 
 START TRANSACTION;

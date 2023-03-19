@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "CemeteryLocatorApplication";
+    include_once('header.php');
+    define("DB_SERVER", "localhost");
+    define("DB_USER", "ButteArchives");
+    define("DB_PASSWORD", 'password');
+    define("DB_DATABASE", "CemeteryLocatorApplication");
 
     //echo sha1('aslam');
     if (isset($_REQUEST['attempt']))
@@ -14,7 +15,7 @@
 
 
         // connect to the database
-        $connect = mysqli_connect( $servername, $username, null, $database );
+        $connect = mysqli_connect( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
         if ( !$connect ) exit( 'connection failed: ' . mysqli_connect_error() );
 
         // create a query statement resource
