@@ -42,7 +42,8 @@
             VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $user_firstName, $user_lastName, $user_email, $user_DoV, $newUserCode);
         if ( $stmt->execute() ) {
-            header("Location: add_headstones_to_user.php");
+
+            header("Location: add_headstones_to_user.php?id=".$newUserCode);
         }
         $stmt->close();
         $conn->close();
