@@ -22,10 +22,7 @@
     //echo sha1('aslam');
     if (isset($_REQUEST['attempt']))
     {
-
-        
         $newUserCode = getRandomString(25);
-        echo "User's code = " . $newUserCode . "<br><br><br>";
 
         $user_firstName = $_POST['firstName'];
         $user_lastName = $_POST['lastName'];
@@ -34,47 +31,22 @@
 
 
         // connect to the database
-        $connect = mysqli_connect( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
-        if ( !$connect ) exit( 'connection failed: ' . mysqli_connect_error() );
-
-        // create a query statement resource
-        $stmt = mysqli_execute_query( $connect,
-        "select ID from Users where max(ID)" );
-
-        if ( $stmt ) {
-            // execute the statement
-            $currMaxID = mysqli_stmt_execute( $stmt );
-            echo "Curr max ID: " . $currMaxID . "<br>";
-            $user_ID = $currMaxID + 1;
-            // bind the substitution to the statement
-            mysqli_stmt_bind_param( $stmt, "ss", $user, $password );
-
-            // retrieve the result...
-            mysqli_stmt_bind_result( $stmt, $major );
-
-            // ...and display it
-            if ( mysqli_stmt_fetch( $stmt ) ) {
-                // Regenerates session ID
-                if (!empty($_POST['password']) && sha1($_POST['password']) === $password) {
-                    session_regenerate_id();
-                    $_SESSION['auth'] = TRUE;
-                    session_start();
-                    $_SESSION['user']= $user;
-                    header('location: butte_archives.php');
-                }
-                
-
-            } else {
-                echo "User does not exists";
-            } 
-
-            // clean up statement resource
-            mysqli_stmt_close( $stmt );
+        $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
+        if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );
+        // echo "firstName: " . $user_firstName . "<br>";
+        // echo "lastName: " . $user_lastName . "<br>";
+        // echo "email: " . $user_email . "<br>";
+        // echo "date of visit: " . $user_DoV . "<br>";
+        // echo "unique code: " . $newUserCode . "<br>";
+        $stmt = $conn->prepare("INSERT INTO Users (firstName, lastName, email, dateOfVisit, uniqueLink)
+            VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $user_firstName, $user_lastName, $user_email, $user_DoV, $newUserCode);
+        if ( $stmt->execute() ) {
+            header("Location: add_headstones_to_user.php");
         }
-        mysqli_close( $connect );
-
+        $stmt->close();
+        $conn->close();
     }
-
 
 
 ?>

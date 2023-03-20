@@ -64,7 +64,7 @@ COMMIT;
 START TRANSACTION;
 
     CREATE TABLE `Users` (
-        `ID` INT(4) NOT NULL UNIQUE,
+        `ID` INT(4) NOT NULL UNIQUE AUTO_INCREMENT,
         `firstName` VARCHAR(45) NOT NULL,
         `lastName` VARCHAR(45) NOT NULL,
         `email` VARCHAR(255),
