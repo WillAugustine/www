@@ -49,13 +49,13 @@ COMMIT;
 START TRANSACTION;
 
     CREATE TABLE `ButteArchivesRecords` (
-        `ID` INT(4) NOT NULL UNIQUE,
+        `ID` INT(4) NOT NULL UNIQUE AUTO_INCREMENT,
         `block` INT(4) NOT NULL,
         `lot` INT(4) NOT NULL,
         `plot` INT(4) NOT NULL,
         `name` VARCHAR(255) NOT NULL,
         `dateOfDeath` DATE,
-        `age` INT(3),
+        `age` VARCHAR(8),
         `undertaker` VARCHAR(255)
     );
 
@@ -80,6 +80,19 @@ START TRANSACTION;
         `userID` INT(4) NOT NULL,
         `headstoneFound` BOOLEAN,
         `Comments` LONGTEXT
+    );
+
+COMMIT;
+
+START TRANSACTION;
+
+    CREATE TABLE `HeadstonesForLinks` (
+        `userLink` VARCHAR(65) NOT NULL,
+        `headstoneID_1` INT(4) NOT NULL,
+        `headstoneID_2` INT(4),
+        `headstoneID_3` INT(4),
+        `headstoneID_4` INT(4),
+        `headstoneID_5` INT(4)
     );
 
 COMMIT;
