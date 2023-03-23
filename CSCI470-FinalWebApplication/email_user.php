@@ -1,15 +1,14 @@
 <link href="style.css" rel="stylesheet" />
 <?php
 
-    function sendEmail($to, $subject, $body, $header) {
-        mail($to,
-            $subject,
-            $body,
-            $header
-        );
+    include_once('header.php');
+
+    function sendEmail($to, $subject, $body) {
+        $email_link = urlencode("mailto:'.$to.'?subject='.$subject.'&body='.$body.'");
+        header("Location: $email_link");
+        die();
     }
 
-    include_once('header.php');
     if (isset($_GET['id'])) {
         $user_link = $_GET['id'];
 
@@ -36,6 +35,21 @@
         $user_lastName = $currentData['lastName'];
         $user_email = $currentData['email'];
         $user_DoV = $currentData['dateOfVisit'];
+        if (array_key_exists('email_sent', $_POST)) {
+            $subject = "Butte Archives Link";
+
+            $folder = explode("email_user", $_SERVER['REQUEST_URI'])[0];
+
+            $link = $_SERVER['HTTP_HOST'] . $folder . "cemeteryVisit.php?id=" . $user_link;
+
+            $body = 'Thanks for visiting the Butte Archives! 
+            %0D%0A%0D%0AHere is the link for your visit to the Saint Patrick Cemetery: 
+            %0D%0Ahttp://'.$link;
+
+            $subject = str_replace(' ', '%20', $subject);
+            $body = str_replace(' ', '%20', $body);
+            sendEmail($user_email, $subject, $body);
+        }
         printf("Does the following infomormation look correct for %s %s?\n", $user_firstName, $user_lastName);
         echo "<br><br>";
         echo '
@@ -57,91 +71,29 @@
                     <th style="width:10%">Plot</th>
                     <th>Name</th>
                 </tr>
-            </table>
+            </table><br><br>
         ';
-        echo '<a class="button" href="email_user.php?link=' . $user_link . '&headstoneIndex=' . $index . '">Yes</a>';
-
     };
+    $subject = "Butte Archives Link";
 
-    
+    $folder = explode("email_user", $_SERVER['REQUEST_URI'])[0];
 
-    // if (isset($_REQUEST['attempt']))
-    // {
-    //     $user_link = $_POST['link'];
-    //     $block = $_POST['block'];
-    //     $lot = $_POST['lot'];
-    //     $plot = $_POST['plot'];
-    //     $name = $_POST['name'];
-    //     $index = (int)$_POST['headstoneIndex'];
-    //     $index += 1;
+    $link = $_SERVER['HTTP_HOST'] . $folder . "cemeteryVisit.php?id=" . $user_link;
 
-        
-    //     $sql_insert_variables =  "INSERT INTO ButteArchivesRecords (block, lot, plot, name";
-    //     $sql_insert_values = "VALUES (" . $block . ", " . $lot . ", " . $plot . ", '" . $name . "'";
+    $body = 'Thanks for visiting the Butte Archives! 
+    %0D%0A%0D%0AHere is the link for your visit to the Saint Patrick Cemetery: 
+    %0D%0Ahttp://'.$link;
 
-    //     if (!empty($_POST['dateOfDeath'])) {
-    //         $DoD = $_POST['dateOfDeath'];
-    //         $sql_insert_variables .= ", dateOfDeath";
-    //         $sql_insert_values .= ", " . $DoD;
-    //     }
-    //     if (!empty($_POST['age'])) {
-    //         $age = $_POST['age'];
-    //         $sql_insert_variables .= ", age";
-    //         $sql_insert_values .= ", " . $age;
-    //     }
-    //     if (!empty($_POST['undertaker'])) {
-    //         $undertaker = $_POST['undertaker'];
-    //         $sql_insert_variables .= ", undertaker";
-    //         $sql_insert_values .= ", " . $undertaker;
-    //     }
-        
-    //     $sql_insert_variables .= ") ";
-    //     $sql_insert_values .= ")";
-    //     $sql = $sql_insert_variables . $sql_insert_values;
+    $subject = str_replace(' ', '%20', $subject);
+    $body = str_replace(' ', '%20', $body);
 
-    //     echo "userID: " . $user_ID . "<br>";
-    //     echo "block: " . $block . "<br>";
-    //     echo "lot: " . $lot . "<br>";
-    //     echo "plot: " . $plot . "<br>";
-    //     echo "name: " . $name . "<br>";
-    //     echo "index: " . $index . "<br>";
+    // echo '<a href = "mailto:'.$user_email.'?subject='.$subject.'&body='.$body.'" target="_top">
+    //     <form method ="post">
+    //         <input type="submit" name="email_sent" class="button" value="Yes" />
+    //     </form>
+    // </a>';
 
-        
-        
-
-    //     if (isset($currentData)) {
-    //         echo "currentData is set<br>";
-    //         echo "Current Data:<br><pre>";
-    //         print_r($currentData);
-    //         echo "</pre><br>";
-    //     } else {
-    //         echo "currentData is NOT set<br>";
-    //         // echo "sql: '" . $sql . "<br>";
-    //         if ( $conn->query($sql) ) {
-    //             echo "Added data!<br>";
-    //         } else {
-    //             echo "Error: " . $conn->error . "<br>";
-    //         }
-    //     }
-    //     $stmt->close();
-
-    //     echo '<b>Does everything look correct?</b>';
-    //     echo '<a class="button" href="add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index . '">Yes</a>';
-
-
-    //     // If an entry exists, prompt user to select which one is correct
-    //     //      If new info if correct, update ButteArchivesRecords with new information
-    //     //      If current info is correct, set values equal to current info
-
-
-    //     // $stmt = $conn->prepare("INSERT INTO Users (firstName, lastName, email, dateOfVisit, uniqueLink)
-    //     //     VALUES (?, ?, ?, ?, ?)");
-    //     // $stmt->bind_param("sssss", $user_firstName, $user_lastName, $user_email, $user_DoV, $newUserCode);
-    //     // if ( $stmt->execute() ) {
-
-    //     //     header("Location: add_headstones.php?id=".$newUserCode);
-    //     // }
-    //     // $stmt->close();
-    //     // $conn->close();
-    // }
+    echo '<form method ="post">
+            <input type="submit" name="email_sent" class="button" value="Yes" />
+        </form>';
 ?>
