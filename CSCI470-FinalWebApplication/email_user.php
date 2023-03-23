@@ -4,7 +4,8 @@
     include_once('header.php');
 
     function sendEmail($to, $subject, $body) {
-        $email_link = urlencode("mailto:'.$to.'?subject='.$subject.'&body='.$body.'");
+        $email_link = "mailto:$to?subject=$subject&body=$body";
+        $email_link = str_replace( PHP_EOL, '', $email_link);
         header("Location: $email_link");
         die();
     }
@@ -36,7 +37,7 @@
         $user_email = $currentData['email'];
         $user_DoV = $currentData['dateOfVisit'];
         if (array_key_exists('email_sent', $_POST)) {
-            $subject = "Butte Archives Link";
+            $subject = $user_firstName . " " . $user_lastName . "'s Butte Archives Link for " . $user_DoV;
 
             $folder = explode("email_user", $_SERVER['REQUEST_URI'])[0];
 
