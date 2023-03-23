@@ -1,3 +1,4 @@
+<link href="style.css" rel="stylesheet" />
 <?php
 
     include_once('header.php');
@@ -20,6 +21,11 @@
         $name = $_POST['name'];
         $index = (int)$_POST['headstoneIndex'];
         $index += 1;
+        $DoD = "";
+        $age = "";
+        $undertaker = "";
+
+        
 
         
         $sql_insert_variables =  "INSERT INTO ButteArchivesRecords (block, lot, plot, name";
@@ -45,12 +51,27 @@
         $sql_insert_values .= ")";
         $sql = $sql_insert_variables . $sql_insert_values;
 
-        echo "userID: " . $user_ID . "<br>";
-        echo "block: " . $block . "<br>";
-        echo "lot: " . $lot . "<br>";
-        echo "plot: " . $plot . "<br>";
-        echo "name: " . $name . "<br>";
-        echo "index: " . $index . "<br>";
+        if (array_key_exists('newInformation', $_POST)) {
+            if ($delete_sql = $conn->prepare("DELETE FROM `ButteArchivesRecords` WHERE 
+            `block`=? AND 
+            `lot`=? AND 
+            `plot`=?")) {
+                $stmt->bind_param("iii", $block, $lot, $plot);
+            } else {
+                die("Error: ". $conn->error);
+            }
+            $stmt->execute();
+            $stmt->close();
+            $conn->query($sql);
+            header("Location: add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index");
+        }
+        
+        // echo "user link: " . $user_link . "<br>";
+        // echo "block: " . $block . "<br>";
+        // echo "lot: " . $lot . "<br>";
+        // echo "plot: " . $plot . "<br>";
+        // echo "name: " . $name . "<br>";
+        // echo "index: " . $index . "<br>";
 
         // connect to the database
         $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
@@ -60,9 +81,8 @@
         if ($stmt = $conn->prepare("SELECT * FROM `ButteArchivesRecords` WHERE 
             `block`=? AND 
             `lot`=? AND 
-            `plot`=? AND 
-            `name`=?")) {
-            $stmt->bind_param("iiis", $block, $lot, $plot, $name);
+            `plot`=?")) {
+            $stmt->bind_param("iii", $block, $lot, $plot);
 
         } else {
             die("Error: ". $conn->error);
@@ -73,12 +93,45 @@
         
 
         if (isset($currentData)) {
-            echo "currentData is set<br>";
-            echo "Current Data:<br><pre>";
-            print_r($currentData);
-            echo "</pre><br>";
+            echo "There is already someone buried at
+            ".$block."-".$lot."-".$plot."!<br><br>";
+            $currentName = $currentData['name'];
+            $currentDoD = $currentData['dateOfDeath'];
+            $currentAge = $currentData['age'];
+            $currentUndertaker = $currentData['undertaker'];
+            echo "Please select which is correct:<br><br>";
+            echo '
+            <table style="width:100%">
+                <tr>
+                    <th>Details</th>
+                    <th>Information you inputted</th>
+                    <th>Information currently in records</th>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>'.$name.'</td>
+                    <td>'.$currentName.'</td>
+                </tr>
+                <tr>
+                    <td>Date of Death</td>
+                    <td>'.$DoD.'</td>
+                    <td>'.$currentDoD.'</td>
+                </tr>
+                <tr>
+                    <td>Age</td>
+                    <td>'.$age.'</td>
+                    <td>'.$currentAge.'</td>
+                </tr>
+                <tr>
+                    <td>Undertaker</td>
+                    <td>'.$undertaker.'</td>
+                    <td>'.$currentUndertaker.'</td>
+                </tr>
+            </table><br><br>';
+            
+
         } else {
-            echo "currentData is NOT set<br>";
+            // echo "currentData is NOT set<br>";
             // echo "sql: '" . $sql . "<br>";
             if ( $conn->query($sql) ) {
                 echo "Added data!<br>";
@@ -88,8 +141,11 @@
         }
         $stmt->close();
 
-        echo '<b>Does everything look correct?</b>';
-        echo '<a class="button" href="add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index . '">Yes</a>';
+        echo '
+            <form method="post">
+                <input type="submit" name="newInformation" class="button" value="The information I inputted is correct" />
+            </form>';
+        echo '<a class="button" href="add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index . '">They are both buried at '.$block.'-'.$lot.'-'.$plot.'</a>';
 
 
         // If an entry exists, prompt user to select which one is correct

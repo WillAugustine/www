@@ -6,8 +6,11 @@
     function sendEmail($to, $subject, $body) {
         $email_link = "mailto:$to?subject=$subject&body=$body";
         $email_link = str_replace( PHP_EOL, '', $email_link);
-        header("Location: $email_link");
-        die();
+        echo '
+            <script type="text/javascript">
+                window.location.href = "'.$email_link.'";
+                window.location.href = "./";
+            </script>';
     }
 
     if (isset($_GET['id'])) {
@@ -87,12 +90,6 @@
 
     $subject = str_replace(' ', '%20', $subject);
     $body = str_replace(' ', '%20', $body);
-
-    // echo '<a href = "mailto:'.$user_email.'?subject='.$subject.'&body='.$body.'" target="_top">
-    //     <form method ="post">
-    //         <input type="submit" name="email_sent" class="button" value="Yes" />
-    //     </form>
-    // </a>';
 
     echo '<form method ="post">
             <input type="submit" name="email_sent" class="button" value="Yes" />
