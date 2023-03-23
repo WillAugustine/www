@@ -43,19 +43,39 @@
         // $stmt->close();
         // $conn->close();
     }
-echo '
-<form action="populate_records.php?attempt" method="post">
-    <pre>
-        Block: <input type="text" name="block" /><br />
-        Lot: <input type="text" name="lot" /><br />
-        Plot: <input type="text" name="plot" /><br />
-        Name: <input type="text" name="name" /><br />
-        Date of Death: <input type="date" name="dateOfDeath" /><br />
-        Age: <input type="text" name="age" /><br />
-        Undertaker: <input type="text" name="undertaker" /><br />
-        <input type="hidden" name="link" value="'.$user_link.'"/> 
-        <input type="hidden" name="headstoneIndex" value="'.$index.'"/> 
-        <input type="submit" value="Add Headstone" />
-    </pre>
-</form>'
+if ($index <= 0) {
+    echo '
+    <form action="populate_records.php?attempt" method="post">
+        <pre>
+            Block: <input type="text" name="block" /><br />
+            Lot: <input type="text" name="lot" /><br />
+            Plot: <input type="text" name="plot" /><br />
+            Name: <input type="text" name="name" /><br />
+            Date of Death: <input type="date" name="dateOfDeath" /><br />
+            Age: <input type="text" name="age" /><br />
+            Undertaker: <input type="text" name="undertaker" /><br />
+            <input type="hidden" name="link" value="'.$user_link.'"/> 
+            <input type="hidden" name="headstoneIndex" value="'.$index.'"/> 
+            <input type="submit" value="Add Headstone" />
+        </pre>
+    </form>';
+}
+else if ($index <= 5) {
+    echo '
+    <form action="populate_records.php?attempt" method="post">
+        <pre>
+            Block: <input type="text" name="block" /><br />
+            Lot: <input type="text" name="lot" /><br />
+            Plot: <input type="text" name="plot" /><br />
+            Name: <input type="text" name="name" /><br />
+            Date of Death: <input type="date" name="dateOfDeath" /><br />
+            Age: <input type="text" name="age" /><br />
+            Undertaker: <input type="text" name="undertaker" /><br />
+            <input type="hidden" name="link" value="'.$user_link.'"/> 
+            <input type="hidden" name="headstoneIndex" value="'.$index.'"/> 
+            <input type="submit" value="Add Headstone" />
+            <input type="submit" formaction="email_user.php?id='.$user_link.'" value="Send link to user"/>
+        </pre>
+    </form>';
+}
 ?>
