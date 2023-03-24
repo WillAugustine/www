@@ -83,7 +83,7 @@ COMMIT;
 START TRANSACTION;
 
     CREATE TABLE `HeadstonesForLinks` (
-        `userLink` VARCHAR(65) NOT NULL,
+        `userLink` VARCHAR(65) NOT NULL UNIQUE,
         `headstoneID_1` INT(4) NOT NULL,
         `headstoneID_2` INT(4),
         `headstoneID_3` INT(4),
