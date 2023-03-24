@@ -125,7 +125,7 @@ if (isset($valid_id, $valid_name, $valid_email, $valid_age)) {
     // echo "Result: '$result'";
     if ($result == '') {
         echo "New record created successfully<br />";
-        $sql = $conn->prepare("INSERT INTO personalinfo_shadow (ID, name, email, age, deleted) VALUES (?, ?, ?, ?, false)");
+        $sql = $conn->prepare("INSERT IGNORE INTO personalinfo_shadow (ID, name, email, age, deleted) VALUES (?, ?, ?, ?, false)");
         $sql->bind_param('sssi', $valid_id, $valid_name, $valid_email, $valid_age);
         $sql->execute();
         $result = $sql->error;
