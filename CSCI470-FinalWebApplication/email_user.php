@@ -4,9 +4,13 @@
     include_once('header.php');
 
     function sendEmail($to, $subject, $body) {
-        $email_link = urlencode("mailto:'.$to.'?subject='.$subject.'&body='.$body.'");
-        header("Location: $email_link");
-        die();
+        $email_link = "mailto:$to?subject=$subject&body=$body";
+        $email_link = str_replace( PHP_EOL, '', $email_link);
+        echo '
+            <script type="text/javascript">
+                window.location.href = "'.$email_link.'";
+                window.location.href = "./";
+            </script>';
     }
 
     if (isset($_GET['id'])) {
@@ -36,7 +40,7 @@
         $user_email = $currentData['email'];
         $user_DoV = $currentData['dateOfVisit'];
         if (array_key_exists('email_sent', $_POST)) {
-            $subject = "Butte Archives Link";
+            $subject = $user_firstName . " " . $user_lastName . "'s Butte Archives Link for " . $user_DoV;
 
             $folder = explode("email_user", $_SERVER['REQUEST_URI'])[0];
 
@@ -86,12 +90,6 @@
 
     $subject = str_replace(' ', '%20', $subject);
     $body = str_replace(' ', '%20', $body);
-
-    // echo '<a href = "mailto:'.$user_email.'?subject='.$subject.'&body='.$body.'" target="_top">
-    //     <form method ="post">
-    //         <input type="submit" name="email_sent" class="button" value="Yes" />
-    //     </form>
-    // </a>';
 
     echo '<form method ="post">
             <input type="submit" name="email_sent" class="button" value="Yes" />
