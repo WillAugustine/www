@@ -26,23 +26,19 @@ COMMIT;
 START TRANSACTION;
 
     CREATE TABLE `block_data` (
-        `number` INT(3) NOT NULL UNIQUE,
-        `SE_lat` DECIMAL(11, 8),
-        `SE_long` DECIMAL(11, 8),
-        `SW_lat` DECIMAL(11, 8),
-        `SW_long` DECIMAL(11, 8),
-        `NE_lat` DECIMAL(11, 8),
-        `NE_long` DECIMAL(11, 8),
-        `NW_lat` DECIMAL(11, 8),
-        `NW_long` DECIMAL(11, 8)
+        `blockID` INT(3) NOT NULL UNIQUE,
+        `maxLat` DECIMAL(11, 8),
+        `minLat` DECIMAL(11, 8),
+        `maxLong` DECIMAL(11, 8),
+        `minLong` DECIMAL(11, 8)
     );
 
-    LOAD DATA LOCAL INFILE 'data\BlockCorners_Modified.csv'
-        INTO TABLE `block_data`
-        FIELDS TERMINATED BY ','
-        ENCLOSED BY ""
-        LINES TERMINATED BY '\n'
-        IGNORE 1 ROWS;
+    -- LOAD DATA LOCAL INFILE 'data\BlockCorners_Modified.csv'
+    --     INTO TABLE `block_data`
+    --     FIELDS TERMINATED BY ','
+    --     ENCLOSED BY ""
+    --     LINES TERMINATED BY '\n'
+    --     IGNORE 1 ROWS;
 
 COMMIT;
 
