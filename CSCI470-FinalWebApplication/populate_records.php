@@ -34,17 +34,17 @@
         if (!empty($_POST['dateOfDeath'])) {
             $DoD = $_POST['dateOfDeath'];
             $sql_insert_variables .= ", dateOfDeath";
-            $sql_insert_values .= ", " . $DoD;
+            $sql_insert_values .= ", STR_TO_DATE('" . $DoD . "', '%Y-%m-%d')";
         }
         if (!empty($_POST['age'])) {
             $age = $_POST['age'];
             $sql_insert_variables .= ", age";
-            $sql_insert_values .= ", " . $age;
+            $sql_insert_values .= ", '" . $age . "'";
         }
         if (!empty($_POST['undertaker'])) {
             $undertaker = $_POST['undertaker'];
             $sql_insert_variables .= ", undertaker";
-            $sql_insert_values .= ", " . $undertaker;
+            $sql_insert_values .= ", '" . $undertaker . "'";
         }
         
         $sql_insert_variables .= ") ";
@@ -58,7 +58,21 @@
             `plot`=?")) {
                 $stmt->bind_param("iii", $block, $lot, $plot);
             } else {
-                die("Error: ". $conn->error);
+                die("Error deleting data: ". $conn->error);
+            }
+            $stmt->execute();
+            $stmt->close();
+            $conn->query($sql);
+            header("Location: add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index");
+        }
+        else if (array_key_exists('currInformation', $_POST)) {
+            if ($delete_sql = $conn->prepare("DELETE FROM `ButteArchivesRecords` WHERE 
+            `block`=? AND 
+            `lot`=? AND 
+            `plot`=?")) {
+                $stmt->bind_param("iii", $block, $lot, $plot);
+            } else {
+                die("Error deleting data: ". $conn->error);
             }
             $stmt->execute();
             $stmt->close();
@@ -85,7 +99,7 @@
             $stmt->bind_param("iii", $block, $lot, $plot);
 
         } else {
-            die("Error: ". $conn->error);
+            die("Error selecting data: ". $conn->error);
         }
         $stmt->execute();
         $result = $stmt->get_result();
@@ -128,6 +142,16 @@
                     <td>'.$currentUndertaker.'</td>
                 </tr>
             </table><br><br>';
+
+            echo '
+            <form method="post">
+                <input type="submit" name="newInformation" class="button" value="The information I inputted is correct" />
+            </form>';
+
+            echo '
+            <form method="post">
+                <input type="submit" name="currInformation" class="button" value="The current information is correct" />
+            </form>';
             
 
         } else {
@@ -135,17 +159,15 @@
             // echo "sql: '" . $sql . "<br>";
             if ( $conn->query($sql) ) {
                 echo "Added data!<br>";
+                echo '<a class="button" href="add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index . '">Continue</a>';
             } else {
-                echo "Error: " . $conn->error . "<br>";
+                echo "Error adding data: " . $conn->error . "<br>";
             }
         }
         $stmt->close();
 
-        echo '
-            <form method="post">
-                <input type="submit" name="newInformation" class="button" value="The information I inputted is correct" />
-            </form>';
-        echo '<a class="button" href="add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index . '">They are both buried at '.$block.'-'.$lot.'-'.$plot.'</a>';
+        
+        
 
 
         // If an entry exists, prompt user to select which one is correct

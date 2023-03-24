@@ -43,7 +43,7 @@
         // $stmt->close();
         // $conn->close();
     }
-if ($index <= 0) {
+if ($index === 0) {
     echo '
     <form action="populate_records.php?attempt" method="post">
         <pre>
