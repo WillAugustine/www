@@ -159,7 +159,26 @@
             // echo "sql: '" . $sql . "<br>";
             if ( $conn->query($sql) ) {
                 echo "Added data!<br>";
-                echo '<a class="button" href="add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index . '">Continue</a>';
+                if ($stmt = $conn->prepare("SELECT * FROM `ButteArchivesRecords` WHERE 
+                    `block`=? AND 
+                    `lot`=? AND 
+                    `plot`=? AND
+                    `name`=?")) {
+                    $stmt->bind_param("iiis", $block, $lot, $plot, $name);
+
+                } else {
+                    die("Error selecting data: ". $conn->error);
+                }
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $currentData = $result->fetch_assoc();
+                
+                // echo "currentData: '$currentData'<br>";
+                if (isset($currentData)) {
+                    $headstoneID = $currentData['ID'];
+                }
+                echo '<a class="button" href="add_headstone_to_visit.php?link=' . $user_link . '&headstoneID='.$headstoneID.'&index=' . $index . '">Continue</a>';
+
             } else {
                 echo "Error adding data: " . $conn->error . "<br>";
             }
