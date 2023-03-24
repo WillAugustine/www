@@ -1,0 +1,22 @@
+<form id="form_validate" method="POST" action="form_validation.php">
+    <fieldset>
+    <legend>Form Validation Demo</legend>
+    
+    <p>ID: <input type="text" name="sid"></p>
+    
+    <p>Name: <input type="text" name="name">
+    <input type="checkbox" disabled name="valid_name"></p>
+    
+    <p>Email: <input type="text" size="32" id="email" name="email">
+    <input id="valid_email" type="checkbox" disabled name="valid_email"></p>
+    <div id="rsp_email"><!-- --></div>
+    
+    <p>Age: <input type="text" size="4" id="age" name="age" <small>(between 16 and 100)</small>
+    <input id="valid_age" type="checkbox" disabled name="valid_age"></p>
+    <div id="rsp_age"><!-- --></div>
+    
+    <p><input type="submit"></p>
+    
+    </fieldset>
+    </form>
+    
