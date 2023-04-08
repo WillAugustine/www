@@ -43,7 +43,7 @@
         $stmt->bind_param("sssss", $user_firstName, $user_lastName, $user_email, $user_DoV, $newUserCode);
         if ( $stmt->execute() ) {
 
-            header("Location: add_headstones_to_user.php?id=".$newUserCode);
+            header("Location: add_headstones.php?link=".$newUserCode."&headstoneIndex=0");
         }
         $stmt->close();
         $conn->close();
@@ -54,9 +54,11 @@
 
 
 <form action="create_new_user.php?attempt" method="post">
-    First Name: <input type="text" name="firstName" /><br />
-    Last Name: <input type="text" name="lastName" /><br />
-    Email: <input type="text" name="email" /><br />
-    Date of Visit: <input type="date" name="dateOfVisit" /><br />
-    <input type="submit" value="Create User" />
+    <pre>
+        First Name: <input type="text" name="firstName" /><br />
+        Last Name: <input type="text" name="lastName" /><br />
+        Email: <input type="text" name="email" /><br />
+        Date of Visit: <input type="date" name="dateOfVisit" /><br />
+        <input type="submit" value="Create User" />
+    </pre>
 </form>

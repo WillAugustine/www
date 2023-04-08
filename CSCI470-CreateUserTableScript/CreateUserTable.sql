@@ -21,8 +21,6 @@ START TRANSACTION;
         `num_logons` INT(5) DEFAULT 0
     );
 
-    -- DESC `tbl_users`;
-
     ALTER TABLE `tbl_users`
         ADD PRIMARY KEY (`username`),
         ADD KEY `last_name` (`last_name`(20));
@@ -30,8 +28,6 @@ START TRANSACTION;
     INSERT INTO `tbl_users` (`username`, `password`, `first_name`, `middle_name`, `last_name`)
         VALUES
         ('waugustine', sha1('MiloMan7'), 'William', 'R', 'Augustine');
-
-    -- SELECT * FROM `tbl_users`;
 
 COMMIT;
 
