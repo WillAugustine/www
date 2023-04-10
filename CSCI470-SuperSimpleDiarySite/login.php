@@ -3,6 +3,17 @@
 <?php
 
     include("header.php");
+
+    function insertIntoLogonAttempsTable($conn, $username, $status) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $agent = $_SERVER['HTTP_USER_AGENT'];
+        // $logged_in = isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] : false;
+        // $status = $logged_in ? "SUCCESS" : "FAILURE";
+                
+        $sql = "INSERT INTO tbl_logon_attempts (username, attempt_datetime, status, ipaddress, user_agent)
+            VALUES ('$username', NOW(), '$status', '$ip', '$agent')";
+        $conn->query($sql);
+    }
     
     $servername = "localhost";
     $db_username = "diaryappdbuser";
@@ -12,33 +23,51 @@
     if (isset($_GET['logout'])) {
         session_start();
         $_SESSION['logged_in'] = false;
+        session_destroy();
         header("Location: ./");
     }
 
     if (isset($_GET['register'])) {
-        $conn = new mysqli($servername, $db_username, $db_password, $db_name);
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
+        $error = '<p> <br> </p>';
+
+        if (isset($_POST['token'])) {
+            if ($_POST['token'] === "CSCI 470 token") {
+                $username = isset($_POST['username']) ? $_POST['username'] : "";
+                echo '
+                <center>
+                    <form action="login.php?create" method="post">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" value="'.$username.'"><br><br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password"><br><br>
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name"><br><br>
+                        <label for="middle_initial">Middle Initial:</label>
+                        <input type="text" id="middle_initial" name="middle_initial" maxlength="1"><br><br>
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name"><br><br>
+                        <input type="submit" formaction="login.php" value="Back">
+                        <input type="submit" value="Submit">
+                    </form>
+                </center>';
+                exit();
+            } else {
+                $error = '<div class="invalid" ><p>Invalid token!</p></div>';
+            }
+            
         }
-        $username = $_SESSION['username_attempt'];
+                        
+        echo "<center>Please enter the token:";
+        
+        
         echo '
-        <center>
-            <form action="login.php?create" method="post">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" value="'.$username.'"><br><br>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password"><br><br>
-                <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name"><br><br>
-                <label for="middle_initial">Middle Initial:</label>
-                <input type="text" id="middle_initial" name="middle_initial" maxlength="1"><br><br>
-                <label for="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="last_name"><br><br>
-                <input type="submit" formaction="login.php" value="Back">
+            <form action="login.php?register" method="post">
+                <input type="password" name="token">
+                '.$error.'
                 <input type="submit" value="Submit">
-            </form>
-        </center>';
+            </form></center>';
         exit();
+        
     }
 
     if (isset($_GET['create'])) {
@@ -104,40 +133,21 @@
                 $sql = "UPDATE tbl_users SET last_successful_logon=NOW(), num_logons=$updated_num_logons WHERE username='$username'";
                 $update_tbl_users_result = $conn->query($sql);
 
-                $ip = $_SERVER['REMOTE_ADDR'];
-                $agent = $_SERVER['HTTP_USER_AGENT'];
-                // $logged_in = isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] : false;
-                // $status = $logged_in ? "SUCCESS" : "FAILURE";
-                $status = "SUCCESS";
-                        
-                $sql = "INSERT INTO tbl_logon_attempts (username, attempt_datetime, status, ipaddress, user_agent)
-                    VALUES ('$username', NOW(), '$status', '$ip', '$agent')";
-                $conn->query($sql);
+                insertIntoLogonAttempsTable($conn, $username, "SUCCESS");
 
                 header("Location: ./");
             } else {
                 $error_msg = "Incorrect password!";
-                // Login failed
-                // echo "Invalid username or password";
-                $ip = $_SERVER['REMOTE_ADDR'];
-                $agent = $_SERVER['HTTP_USER_AGENT'];
-                // $logged_in = isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] : false;
-                $status = "FAILURE";
-                        
-                $sql = "INSERT INTO tbl_logon_attempts (username, attempt_datetime, status, ipaddress, user_agent)
-                    VALUES ('$username', NOW(), '$status', '$ip', '$agent')";
-                if ($conn->query($sql) === TRUE){
-                    
-                }  else {
-                    echo "Error: " . $sql . "<br>" . $conn->error;
-                }
+
+                insertIntoLogonAttempsTable($conn, $username, "FAILURE");
+
                 $sql = "UPDATE tbl_users SET last_unsuccessful_logon=NOW() WHERE username='$username'";
                 $update_tbl_users_result = $conn->query($sql);
 
             }
         } else {
             $error_msg = "Username does not exist!";
-            $_SESSION['username_attempt'] = $username;
+            // $_SESSION['username_attempt'] = $username;
         }
 
         

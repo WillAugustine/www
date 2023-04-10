@@ -9,9 +9,21 @@
     session_start();
     $logged_in = isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] : false;
     $user_name = isset($_SESSION['first_name']) ? $_SESSION['first_name'] : '';
+    $user_username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
     $title = $logged_in ? "$user_name's Diary" : "Diary";
+    $profile_menu = "
+    <div class='dropdown'>
+        <button class='dropbtn'>$user_username</button>
+        <div class='dropdown-content' style='left:0;'>
+            <a href='view_profile.php'>View Proifile</a>
+            <a href='./'>View Diary</a>
+            <a href='create_entry.php'>Create Entry</a>
+            <a href='login.php?logout'>Logout</a>
+        </div>
+    </div>
+    ";
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
-        $button_message = "<a href='profile.php' id='login-button'>View Profile</a>&nbsp;<a href='login.php?logout' id='login-button'>Logout</a>";
+        $button_message = "$profile_menu";
     } else {
         $button_message = "<a href='login.php' id='login-button'>Login</a>";
     }
