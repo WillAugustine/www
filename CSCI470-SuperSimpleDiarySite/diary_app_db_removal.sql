@@ -1,0 +1,15 @@
+START TRANSACTION;
+    USE `diaryappdb`;
+COMMIT;
+
+START TRANSACTION;
+    DROP TABLE `tbl_diary_entries`;
+COMMIT;
+
+START TRANSACTION;
+    DROP TABLE `tbl_logon_attempts`;
+COMMIT;
+
+START TRANSACTION;
+    DROP TABLE `tbl_users`;
+COMMIT;

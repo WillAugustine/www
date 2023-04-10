@@ -32,7 +32,7 @@ COMMIT;
 
 START TRANSACTION;
 
-    CREATE TABLE IF NOT EXISTS `tbl_logon_attemps` (
+    CREATE TABLE IF NOT EXISTS `tbl_logon_attempts` (
         `username` VARCHAR(255) NOT NULL,
         `attempt_datetime` DATETIME NOT NULL,
         `status` ENUM('SUCCESS', 'FAILURE'),
