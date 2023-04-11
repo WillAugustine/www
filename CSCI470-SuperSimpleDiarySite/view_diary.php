@@ -25,11 +25,16 @@
         $entry_index = $total_entries - 1;
     }
 
+
     // Handle button clicks
     if (isset($_POST['prev'])) {
         $entry_index--;
     } elseif (isset($_POST['next'])) {
         $entry_index++;
+    }
+    
+    if ($entry_index < 0) {
+        $entry_index = 0;
     }
     if (isset($_POST['delete'])) {
         // Get the entry_datetime value of the current entry
@@ -60,6 +65,9 @@
             $entry = $row['entry'];
         }
     } else {
+        
+        // echo "Error: " . $sql . "<br>" . $conn->error;
+        
         $entry = "No more entries";
     }
 
