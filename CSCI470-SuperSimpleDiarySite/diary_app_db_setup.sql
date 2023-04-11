@@ -1,11 +1,16 @@
-CREATE DATABASE IF NOT EXISTS `diaryappdb`;
+-- Author: Will Augustine
+--      Description: MySQL script used to create all necessary tables in the diaryappdb database
+--      Usage: After logging into mysql command line, run the following command:
+--          'source <path where script is located>\diary_app_db_setup.sql'
 
 
-START TRANSACTION;
+-- CREATE DATABASE IF NOT EXISTS `diaryappdb`;
 
-    CREATE USER diaryappdbuser@localhost IDENTIFIED BY 'DiaryPass$';
+-- START TRANSACTION;
 
-COMMIT;
+--     CREATE USER diaryappdbuser@localhost IDENTIFIED BY 'DiaryPass$';
+
+-- COMMIT;
 
 GRANT ALL PRIVILEGES ON diaryappdb.* TO diaryappdbuser@localhost;
 FLUSH PRIVILEGES;
@@ -22,11 +27,9 @@ START TRANSACTION;
         `last_name` VARCHAR(40) NOT NULL,
         `last_successful_logon` DATETIME DEFAULT NULL,
         `last_unsuccessful_logon` DATETIME DEFAULT NULL,
-        `num_logons` INT(5) DEFAULT 0        
+        `num_logons` INT(5) DEFAULT 0,
+        PRIMARY KEY (`username`)     
     );
-
-    ALTER TABLE `tbl_users`
-        ADD PRIMARY KEY (`username`);
 
 COMMIT;
 
