@@ -1,0 +1,12 @@
+USE CemeteryApplication;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS Archives_User;
+DROP TABLE IF EXISTS Regular_Users;
+DROP TABLE IF EXISTS Block_Record_Image;
+DROP TABLE IF EXISTS Highlighting_Data;
+DROP TABLE IF EXISTS Search_Record;
+DROP TABLE IF EXISTS Search_Feedback;
+
+SET FOREIGN_KEY_CHECKS = 1;

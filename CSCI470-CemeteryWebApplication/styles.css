@@ -1,0 +1,168 @@
+/*
+    Author: Will Augustine
+    Description: Styling for simple diary web pages    
+*/
+
+/* Styling for invalid/error message text */
+.invalid p {
+    color: red;
+}
+
+/* Styling for logon buttons */
+#login-button {
+    border-radius: 4px;
+    background-color: #3264a8;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+/* Styling for header */
+.header {
+    display: flex;
+}
+
+/* Styling for header elements */
+.item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Styling for first header element */
+.item:first-child > span {
+    margin-right: auto;
+}
+
+/* Styling for last header element */
+.item:last-child  > span {
+    margin-left: auto;
+}
+
+/* Styling for drop down menu button */
+.dropbtn {
+    border-radius: 4px;
+    background-color: #3264a8;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+/* Styling for drop down menu options */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Styling for drop down menu options elements */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Styling for drop down menu options elements links */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Styling for hovering over drop down menu options elements links */
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling for hovering over drop drop down menu options */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Styling for hovering over any drop down menu options*/
+.dropdown:hover .dropbtn {
+    background-color: #295088;
+}
+
+/* Styling for entry viewing box */
+.entry-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+/* Styling for first element in entry viewing box (left arrow) */
+.entry-container:first-child > span {
+    margin-right: auto;
+}
+
+/* Styling for last element in entry viewing box (right arrow) */
+.entry-container:last-child  > span {
+    margin-left: auto;
+}
+
+/* Styling for entry when viewing diary */
+.entry {
+    border: 1px solid black;
+    padding: 10px;
+    margin: 10px;
+    width: 300px;
+    height: 200px;
+    overflow: auto;
+}
+
+/* Styling for left and right arrows when viewing diary */
+.arrow {
+    border: none;
+    background-color: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Styling for previous (left) arrow */
+.prev {
+    margin-right: 10px;
+}
+
+/* Styling for next (right) arrow */
+.next {
+    margin-left: 10px;
+}
+
+/* Styling for container housing arrows */
+.arrow-container {
+    min-width: 50px;
+}
+
+/* Styling for logon-history's table elements */
+.logon-history table {
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+/* Styling for logon-history's th (table header) and td (table data) elements */
+.logon-history th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+/* Styling for logon-history's even rows of data */
+.logon-history tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

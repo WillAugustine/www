@@ -25,15 +25,16 @@
     $user_username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 
     // Determine page title
-    $title = $logged_in ? "Welcome, $user_username!" : "Welcome";
+    $title = $logged_in ? "$user_name's Diary" : "Diary";
 
     // Drop down menu
     $profile_menu = "
     <div class='dropdown'>
         <button class='dropbtn'>$user_username</button>
         <div class='dropdown-content' style='left:0;'>
-            <a href='create_new_user.php'>Create Visitor</a>
-            <a href='view_feedback.php'>View Feedback</a>
+            <a href='view_profile.php'>View Proifile</a>
+            <a href='./'>View Diary</a>
+            <a href='create_entry.php'>Create Entry</a>
             <a href='login.php?logout'>Logout</a>
         </div>
     </div>";

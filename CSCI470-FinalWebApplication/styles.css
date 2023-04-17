@@ -1,0 +1,162 @@
+/*
+    Author: Will Augustine
+    Description: Styling for simple diary web pages    
+*/
+
+/* Styling for invalid/error message text */
+.invalid p {
+    color: red;
+}
+
+/* Styling for logon buttons */
+#login-button {
+    border-radius: 4px;
+    background-color: #3264a8;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+/* Styling for header */
+.header {
+    display: flex;
+}
+
+/* Styling for header elements */
+.item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Styling for first header element */
+.item:first-child > span {
+    margin-right: auto;
+}
+
+/* Styling for last header element */
+.item:last-child  > span {
+    margin-left: auto;
+}
+
+/* Styling for drop down menu button */
+.dropbtn {
+    border-radius: 4px;
+    background-color: #3264a8;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+/* Styling for drop down menu options */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Styling for drop down menu options elements */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Styling for drop down menu options elements links */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Styling for hovering over drop down menu options elements links */
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling for hovering over drop drop down menu options */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Styling for hovering over any drop down menu options*/
+.dropdown:hover .dropbtn {
+    background-color: #295088;
+}
+
+.visitor_information {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.visitor_information form input[type="text"] {
+    margin-bottom: 10px;
+}
+
+.visitor_information form input[type="date"] {
+    margin-bottom: 15px;
+}
+
+.visitor_information form input[type="submit"] {
+    display: block;
+    margin: 0 auto;
+}
+
+.visitor_information .required::before {
+    content: "*";
+    color: red;
+}
+
+.visitor_information .required-text {
+    text-align: center;
+    font-size: 0.8em;
+    margin-bottom: 15px;
+}
+
+.visitor_information .form-group {
+    display: flex;
+    position: relative;
+}
+
+.visitor_information .form-group label {
+    width: 120px;
+}
+
+.block-image {
+    max-width: 75%;
+    height: auto;
+}
+
+.blockOptions {
+    position: absolute;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#blockOptions li {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#blockOptions li:hover {
+    background-color: #eee;
+}

@@ -1,16 +1,18 @@
+SOURCE C:/Users/waugustine/Documents/Ampps/www/CSCI470-CemeteryWebApplication/reset_cemetery_tables.sql;
+
 -- Start a transaction
 START TRANSACTION;
 
 -- Create the CemeteryApplication database
 START TRANSACTION;
 
-    CREATE DATABASE CemeteryApplication;
+    CREATE DATABASE IF NOT EXISTS CemeteryApplication;
 
 COMMIT;
 
 START TRANSACTION;
 
-    CREATE USER 'CemeteryApplication_User'@'localhost' IDENTIFIED BY 'Pa$$word';
+    CREATE USER IF NOT EXISTS 'CemeteryApplication_User'@'localhost' IDENTIFIED BY 'Pa$$word';
     GRANT ALL PRIVILEGES ON CemeteryApplication.* TO 'CemeteryApplication_User'@'localhost';
     FLUSH PRIVILEGES;
 
@@ -41,6 +43,17 @@ START TRANSACTION;
 
 COMMIT;
 
+-- Create the Block Record Image table
+START TRANSACTION;
+
+    CREATE TABLE Block_Record_Image (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        block_number VARCHAR(255) NOT NULL,
+        image_data BLOB NOT NULL
+    );
+
+COMMIT;
+
 -- Create the Regular Users table
 START TRANSACTION;
     
@@ -53,13 +66,14 @@ START TRANSACTION;
 
 COMMIT;
 
--- Create the Block Record Image table
 START TRANSACTION;
 
-    CREATE TABLE Block_Record_Image (
+    CREATE TABLE Highlighting_Data (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        block_number VARCHAR(255) NOT NULL,
-        image_data BLOB NOT NULL
+        min_x DOUBLE,
+        min_y DOUBLE,
+        max_x DOUBLE,
+        max_y DOUBLE
     );
 
 COMMIT;
@@ -74,8 +88,10 @@ START TRANSACTION;
         block VARCHAR(255) NOT NULL,
         lot VARCHAR(255) NOT NULL,
         plot VARCHAR(255) NOT NULL,
+        highlight_id INT NOT NULL,
         search_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES Archives_User(id)
+        FOREIGN KEY (user_id) REFERENCES Archives_User(id),
+        FOREIGN KEY (highlight_id) REFERENCES Highlighting_Data(id)
     );
 
 COMMIT;

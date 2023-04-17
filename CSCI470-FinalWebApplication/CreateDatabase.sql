@@ -9,15 +9,15 @@ USE CemeteryLocatorApplication;
 
 START TRANSACTION;
 
-    CREATE TABLE `authorized_users` (
+    CREATE TABLE `AuthorizedUsers` (
         `username` VARCHAR(255) NOT NULL UNIQUE,
         `password` VARCHAR(40) NOT NULL
     );
 
-    ALTER TABLE `authorized_users`
+    ALTER TABLE `AuthorizedUsers`
         ADD PRIMARY KEY (`username`);
 
-    INSERT INTO `authorized_users` (`username`, `password`)
+    INSERT INTO `AuthorizedUsers` (`username`, `password`)
         VALUES
         ('ButteArchives', sha1('SaintPatrick'));
 
@@ -25,7 +25,7 @@ COMMIT;
 
 START TRANSACTION;
 
-    CREATE TABLE `block_data` (
+    CREATE TABLE `BlockData` (
         `blockID` INT(3) NOT NULL UNIQUE,
         `maxLat` DECIMAL(11, 8),
         `minLat` DECIMAL(11, 8),
@@ -33,12 +33,17 @@ START TRANSACTION;
         `minLong` DECIMAL(11, 8)
     );
 
-    -- LOAD DATA LOCAL INFILE 'data\BlockCorners_Modified.csv'
-    --     INTO TABLE `block_data`
-    --     FIELDS TERMINATED BY ','
-    --     ENCLOSED BY ""
-    --     LINES TERMINATED BY '\n'
-    --     IGNORE 1 ROWS;
+COMMIT;
+
+START TRANSACTION;
+
+    CREATE TABLE `Highlights` (
+        `ID` INT NOT NULL UNIQUE AUTO_INCREMENT,
+        `maxX` DECIMAL(11, 8),
+        `minX` DECIMAL(11, 8),
+        `maxY` DECIMAL(11, 8),
+        `minY` DECIMAL(11, 8)
+    );
 
 COMMIT;
 
@@ -46,13 +51,28 @@ START TRANSACTION;
 
     CREATE TABLE `ButteArchivesRecords` (
         `ID` INT(4) NOT NULL UNIQUE AUTO_INCREMENT,
-        `block` INT(4) NOT NULL,
+        `block` VARCHAR(255) NOT NULL,
         `lot` INT(4) NOT NULL,
         `plot` INT(4) NOT NULL,
         `name` VARCHAR(255) NOT NULL,
         `dateOfDeath` DATE,
         `age` VARCHAR(8),
-        `undertaker` VARCHAR(255)
+        `undertaker` VARCHAR(255),
+        `highlightID` INT,
+        FOREIGN KEY (`highlightID`) REFERENCES `Highlights`(`id`)
+    );
+
+COMMIT;
+
+START TRANSACTION;
+
+    CREATE TABLE `HeadstonesForLinks` (
+        `userLink` VARCHAR(65) NOT NULL UNIQUE,
+        `headstoneID_1` INT(4),
+        `headstoneID_2` INT(4),
+        `headstoneID_3` INT(4),
+        `headstoneID_4` INT(4),
+        `headstoneID_5` INT(4)
     );
 
 COMMIT;
@@ -65,7 +85,9 @@ START TRANSACTION;
         `lastName` VARCHAR(45) NOT NULL,
         `email` VARCHAR(255),
         `dateOfVisit` DATE,
-        `uniqueLink` VARCHAR(65) NOT NULL
+        `uniqueLink` VARCHAR(65) NOT NULL,
+        PRIMARY KEY (`ID`),
+        FOREIGN KEY (`uniqueLink`) REFERENCES `HeadstonesForLinks`(`userLink`)
     );
 
 COMMIT;
@@ -75,20 +97,10 @@ START TRANSACTION;
     CREATE TABLE `Feedback` (
         `userID` INT(4) NOT NULL,
         `headstoneFound` BOOLEAN,
-        `Comments` LONGTEXT
-    );
-
-COMMIT;
-
-START TRANSACTION;
-
-    CREATE TABLE `HeadstonesForLinks` (
-        `userLink` VARCHAR(65) NOT NULL UNIQUE,
-        `headstoneID_1` INT(4) NOT NULL,
-        `headstoneID_2` INT(4),
-        `headstoneID_3` INT(4),
-        `headstoneID_4` INT(4),
-        `headstoneID_5` INT(4)
+        `recommend` BOOLEAN,
+        `useAgain` BOOLEAN,
+        `comments` LONGTEXT,
+        FOREIGN KEY (`userID`) REFERENCES `Users`(`ID`)
     );
 
 COMMIT;
