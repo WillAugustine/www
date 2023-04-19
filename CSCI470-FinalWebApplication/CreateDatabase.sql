@@ -39,10 +39,11 @@ START TRANSACTION;
 
     CREATE TABLE `Highlights` (
         `ID` INT NOT NULL UNIQUE AUTO_INCREMENT,
-        `maxX` DECIMAL(11, 8),
-        `minX` DECIMAL(11, 8),
-        `maxY` DECIMAL(11, 8),
-        `minY` DECIMAL(11, 8)
+        `maxX` DECIMAL(8, 4),
+        `minX` DECIMAL(8, 4),
+        `maxY` DECIMAL(8, 4),
+        `minY` DECIMAL(8, 4),
+        `imageWidth` DECIMAL(8, 4)
     );
 
 COMMIT;
@@ -72,7 +73,12 @@ START TRANSACTION;
         `headstoneID_2` INT(4),
         `headstoneID_3` INT(4),
         `headstoneID_4` INT(4),
-        `headstoneID_5` INT(4)
+        `headstoneID_5` INT(4),
+        FOREIGN KEY (`headstoneID_1`) REFERENCES `ButteArchivesRecords`(`ID`),
+        FOREIGN KEY (`headstoneID_2`) REFERENCES `ButteArchivesRecords`(`ID`),
+        FOREIGN KEY (`headstoneID_3`) REFERENCES `ButteArchivesRecords`(`ID`),
+        FOREIGN KEY (`headstoneID_4`) REFERENCES `ButteArchivesRecords`(`ID`),
+        FOREIGN KEY (`headstoneID_5`) REFERENCES `ButteArchivesRecords`(`ID`)
     );
 
 COMMIT;

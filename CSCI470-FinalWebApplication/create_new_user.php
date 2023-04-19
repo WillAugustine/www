@@ -33,6 +33,7 @@
     {
         $visitor_name = isset($_SESSION['visitor_name']) ? $_SESSION['visitor_name'] : "the user";
         $index = isset($_SESSION['headstone_index']) ? $_SESSION['headstone_index'] : 0;
+        $block = isset($_SESSION['block']) ? $_SESSION['block'] : "";
         echo '
         <div class="visitor_information">
             <h3>Where would '.$visitor_name.' like to visit?</h3>
@@ -40,9 +41,15 @@
             <form action="create_new_user.php?submit_headstone" method="post">
                 
                 <div class="form-group">
+                    <label for="name"><span class="required">Name</span>:</label>
+                    <input type="text" name="name" id="name" required />
+                </div>
+                <div class="form-group">
                     <label for="block"><span class="required">Block</span>:</label>
-                    <input type="text" name="block" id="block" required />
-                    <ul id="blockOptions"></ul>
+                    <div class="input-group">
+                        <input type="text" name="block" id="block" required readonly/>
+                        <span class="input-group-addon" onclick="showOverlay()">&#128269;</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="lot">Lot:</label>
@@ -51,10 +58,6 @@
                 <div class="form-group">
                     <label for="plot">Plot:</label>
                     <input type="text" name="plot" id="plot" />
-                </div>
-                <div class="form-group">
-                    <label for="name"><span class="required">Name</span>:</label>
-                    <input type="text" name="name" id="name" required />
                 </div>
                 <div class="form-group">
                     <label for="dateOfDeath">Date of Death:</label>
@@ -70,34 +73,61 @@
                 </div>
                 <div class="required-text">* means required</div>
                 <input type="submit" value="Add Headstone" />
-                <script>
-                    const blockInput = document.querySelector("#block");
-                    const blockOptions = document.querySelector("#blockOptions");
-                    
-                    blockInput.addEventListener("input", () => {
-                        const value = blockInput.value;
-                        if (value) {
-                            fetch(`get_blocks.php?search=${value}`)
-                                .then(response => response.json())
-                                .then(blocks => {
-                                    blockOptions.innerHTML = "";
-                                    blocks.forEach(block => {
-                                        const li = document.createElement("li");
-                                        li.textContent = block;
-                                        li.addEventListener("click", () => {
-                                            blockInput.value = block;
-                                            blockOptions.innerHTML = "";
-                                        });
-                                        blockOptions.appendChild(li);
-                                    });
-                                });
-                        } else {
-                            blockOptions.innerHTML = "";
-                        }
-                    });
-                </script>
             </form>
-        </div>';
+        </div>
+        <div id="overlay" style="display: none;">
+            <div id="overlay-content">
+                <input type="text" id="overlay-search" placeholder="Search for a block..." />
+                <ul id="overlay-block-list"></ul>
+            </div>
+        </div>
+        <script>
+            function showOverlay() {
+                document.querySelector("#overlay").style.display = "block";
+                fetch(`get_blocks.php`)
+                    .then(response => response.json())
+                    .then(blocks => {
+                        const blockList = document.querySelector("#overlay-block-list");
+                        blockList.innerHTML = "";
+                        blocks.forEach(block => {
+                            const li = document.createElement("li");
+                            li.textContent = block;
+                            li.addEventListener("click", () => {
+                                document.querySelector("#block").value = block;
+                                hideOverlay();
+                            });
+                            blockList.appendChild(li);
+                        });
+                    });
+            }
+            
+            function hideOverlay() {
+                document.querySelector("#overlay").style.display = "none";
+            }
+            
+            document.querySelector("#overlay-search").addEventListener("input", () => {
+                const value = document.querySelector("#overlay-search").value;
+                if (value) {
+                    fetch(`get_blocks.php?search=${value}`)
+                        .then(response => response.json())
+                        .then(blocks => {
+                            const blockList = document.querySelector("#overlay-block-list");
+                            blockList.innerHTML = "";
+                            blocks.forEach(block => {
+                                const li = document.createElement("li");
+                                li.textContent = block;
+                                li.addEventListener("click", () => {
+                                    document.querySelector("#block").value = block;
+                                    hideOverlay();
+                                });
+                                blockList.appendChild(li);
+                            });
+                        });
+                } else {
+                    showOverlay();
+                }
+            });
+        </script>';
         exit();
     }
 
