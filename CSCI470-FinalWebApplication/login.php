@@ -74,7 +74,6 @@
             <?php if (isset($error_msg)) echo '<div class="invalid" ><p>'.$error_msg.'</p></div>';
             else echo '<p> <br> </p>';?>
             <input type="submit" value="Submit">
-            <input type="submit" formaction="login.php?register" value="Create account">
         </form>
     </center>
 </body>

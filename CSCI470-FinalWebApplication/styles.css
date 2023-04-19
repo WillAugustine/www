@@ -137,10 +137,22 @@
 }
 
 .block-image {
-    max-width: 65%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+#image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#highlight-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .blockOptions {
@@ -190,10 +202,4 @@
 
 #overlay-block-list li {
     cursor: pointer;
-}
-
-.highlight {
-    position: absolute;
-    background-color: yellow;
-    opacity: 0.5;
 }

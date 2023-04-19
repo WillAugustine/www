@@ -25,6 +25,15 @@
             $_SESSION['headstone_index'] = 0;
         }
         $block = isset($_POST['block']) ? $_POST['block'] : '';
+        $elements = ['name', 'block', 'lot', 'plot', 'dateOfDeath', 'age', 'undertaker'];
+        foreach($elements as $item) {
+            if (isset($_POST[$item])) {
+                if(isset($_SESSION[$item])) {
+                    unset($_SESSION[$item]);
+                }
+                $_SESSION[$item] = $_POST[$item];
+            }
+        }
         header("Location: highlight_record.php?block=$block");
     }
 

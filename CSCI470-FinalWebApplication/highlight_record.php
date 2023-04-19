@@ -2,6 +2,8 @@
 <?php
     include("header.php");
 
+    $block = $_SESSION['block'];
+
     // Connect to the database
     $conn = new mysqli('localhost', 'ButteArchives', 'password', 'CemeteryLocatorApplication');
     if ($conn->connect_error) {
@@ -9,7 +11,7 @@
     }
 
     // Check if the "done highlighting" button was clicked
-    if (isset($_POST['done_highlighting'])) {
+    if (isset($_GET['request'])) {
         // Get the highlighting data from the form
         $maxX = $_POST['maxX'];
         $minX = $_POST['minX'];
@@ -21,27 +23,14 @@
         $stmt = $conn->prepare("INSERT INTO Highlights (maxX, minX, maxY, minY) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("dddd", $maxX, $minX, $maxY, $minY);
         if($stmt->execute()){
-            header("Location: create_new_user.php?add_headstones");
+            // header("Location: create_new_user.php?add_headstones");
         } else {
             echo "ERROR: " . $stmt->error . "<br>";
         }
 
         $stmt->close();
+        exit();
     }
-
-    // Check if the "clear" button was clicked
-    if (isset($_POST['clear'])) {
-        // Delete all rows from the Highlights table
-        $conn->query("TRUNCATE TABLE Highlights");
-    }
-
-    // Close the database connection
-    $conn->close();
-
-    $block = isset($_GET['block']) ? $_GET['block'] : null;
-    $plot = isset($_GET['plot']) ? $_GET['plot'] : null;
-    $lot = isset($_GET['lot']) ? $_GET['lot'] : null;
-    $name = isset($_GET['name']) ? $_GET['name'] : null;
     
     if ($block !== null) {
         $imagePath = 'blocks/Block ' . $block . '.JPG';
@@ -58,107 +47,95 @@
 <!-- Add a container for the image and highlights -->
 <div id="image-container">
     <!-- Add the image here -->
-    <img src="<?php echo $imagePath?>" alt="Block Image" class="block-image">
+    <img src="<?php echo $imagePath?>" alt="Block Image" class="block-image" id="block-image">
+    <!-- Add a canvas element to draw the highlights on -->
+    <canvas id="highlight-canvas"></canvas>
 </div>
 
-<!-- Add a form to submit the highlighting data -->
-<form method="post" id="highlight-form">
-    <input type="hidden" id="maxX" name="maxX">
-    <input type="hidden" id="minX" name="minX">
-    <input type="hidden" id="maxY" name="maxY">
-    <input type="hidden" id="minY" name="minY">
-    <input type="submit" name="done_highlighting" value="Done Highlighting">
-</form>
-
-<!-- Add a button to clear highlights -->
-<form method="post">
-    <input type="submit" name="clear" value="Clear Highlights">
-</form>
-
-<!-- Add JavaScript to handle highlighting -->
 <script>
-    // Get the image container element
-    const imageContainer = document.getElementById('image-container');
+    // Get references to the image and canvas elements
+    const blockImage = document.querySelector('#block-image');
+    const highlightCanvas = document.querySelector('#highlight-canvas');
 
-    // Get the highlight form elements
-    const highlightForm = document.getElementById('highlight-form');
-    const maxXInput = document.getElementById('maxX');
-    const minXInput = document.getElementById('minX');
-    const maxYInput = document.getElementById('maxY');
-    const minYInput = document.getElementById('minY');
+    // Set the canvas size to match the image size
+    highlightCanvas.width = blockImage.width;
+    highlightCanvas.height = blockImage.height;
 
-    // Initialize variables for tracking the highlight area
-    let isHighlighting = false;
-    let highlightStartX = 0;
-    let highlightStartY = 0;
-    let highlightEndX = 0;
-    let highlightEndY = 0;
-    let clickCount = 0;
+    // Get the canvas 2D context to draw on
+    const ctx = highlightCanvas.getContext('2d');
 
-    // Handle mousedown events on the image container
-    imageContainer.addEventListener('mousedown', (event) => {
-        // Increment the click count
-        clickCount++;
+    // Initialize variables to store the highlight start and end coordinates
+    let highlightStartX = null;
+    let highlightStartY = null;
+    let highlightEndX = null;
+    let highlightEndY = null;
 
-        // Check if this is the first or third click
-        if (clickCount === 1 || clickCount === 3) {
-            // Start highlighting
-            isHighlighting = true;
+    // Add an event listener for clicks on the canvas
+    highlightCanvas.addEventListener('click', (event) => {
+        // Check if this is the first or second click for the current highlight
+        if (highlightStartX === null && highlightStartY === null) {
+            // This is the first click, so store the start coordinates
+            highlightStartX = event.offsetX;
+            highlightStartY = event.offsetY;
+        } else {
+            // This is the second click, so store the end coordinates
+            highlightEndX = event.offsetX;
+            highlightEndY = event.offsetY;
 
-            // Reset the click count if this is the third click
-            if (clickCount === 3) {
-                clickCount = 1;
-            }
+            ctx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
 
-            // Get the starting coordinates of the highlight area
-            const rect = imageContainer.getBoundingClientRect();
-            highlightStartX = event.clientX - rect.left;
-            highlightStartY = event.clientY - rect.top;
-        } else if (clickCount === 2) {
-            // Stop highlighting
-            isHighlighting = false;
+            // Set the fill style to a semi-transparent yellow color
+            ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
 
-            // Get the ending coordinates of the highlight area
-            const rect = imageContainer.getBoundingClientRect();
-            highlightEndX = event.clientX - rect.left;
-            highlightEndY = event.clientY - rect.top;
+            // Draw a filled rectangle on the canvas using the start and end coordinates
+            ctx.fillRect(highlightStartX, highlightStartY, highlightEndX - highlightStartX, highlightEndY - highlightStartY);
 
-            // Set the values of the hidden form inputs
-            maxXInput.value = Math.max(highlightStartX, highlightEndX);
-            minXInput.value = Math.min(highlightStartX, highlightEndX);
-            maxYInput.value = Math.max(highlightStartY, highlightEndY);
-            minYInput.value = Math.min(highlightStartY, highlightEndY);
+            // Reset the start and end coordinates for the next highlight
+            highlightStartX = null;
+            highlightStartY = null;
+            highlightEndX = null;
+            highlightEndY = null;
         }
     });
 
-    // Handle mousemove events on the image container
-    imageContainer.addEventListener('mousemove', (event) => {
-        // Check if we're currently highlighting
-        if (isHighlighting) {
-            // Get the current coordinates of the mouse
-            const rect = imageContainer.getBoundingClientRect();
-            const currentX = event.clientX - rect.left;
-            const currentY = event.clientY - rect.top;
+    // Add an event listener for mousemove events on the canvas
+    highlightCanvas.addEventListener('mousemove', (event) => {
+        // Check if a highlight is currently being drawn
+        if (highlightStartX !== null && highlightStartY !== null) {
+            // Clear the canvas
+            ctx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
 
-            // Calculate the width and height of the highlight area
-            const width = currentX - highlightStartX;
-            const height = currentY - highlightStartY;
+            // Set the fill style to a semi-transparent yellow color
+            ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
 
-            // Create a new highlight element
-            const highlight = document.createElement('div');
-            highlight.classList.add('highlight');
-            highlight.style.left = `${highlightStartX}px`;
-            highlight.style.top = `${highlightStartY}px`;
-            highlight.style.width = `${width}px`;
-            highlight.style.height = `${height}px`;
-
-            // Remove any existing highlights
-            document.querySelectorAll('.highlight').forEach((el) => el.remove());
-
-            // Add the new highlight to the image container
-            imageContainer.appendChild(highlight);
+            // Draw a filled rectangle on the canvas using the start coordinates and current cursor position
+            ctx.fillRect(highlightStartX, highlightStartY, event.offsetX - highlightStartX, event.offsetY - highlightStartY);
         }
     });
+    // Add an event listener for the load event on the image element
+    blockImage.addEventListener('load', () => {
+        // Set the canvas size to match the image size
+        highlightCanvas.width = blockImage.width;
+        highlightCanvas.height = blockImage.height;
 
+        // Set the canvas position to match the image position
+        highlightCanvas.style.top = `${blockImage.offsetTop}px`;
+        highlightCanvas.style.left = `${blockImage.offsetLeft}px`;
+    });
+
+    
 </script>
 
+<?php echo $highlightEndX?>
+<?php echo $highlightStartX?>
+<?php echo $highlightEndY?>
+<?php echo $highlightStartY?>
+
+<form action="highlight_record.php?request" method="post">
+    <input type="hidden" id="maxX" name="maxX" value='<?php echo $highlightEndX?>'>
+    <input type="hidden" id="minX" name="minX" value='<?php echo $highlightStartX?>' >
+    <input type="hidden" id="maxY" name="maxY" value='<?php echo $highlightEndY?>'>
+    <input type="hidden" id="minY" name="minY" value='<?php echo $highlightStartY?>' >
+    <input type="submit" value="Done Highlighting">
+</form>
+    
