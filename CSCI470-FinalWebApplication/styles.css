@@ -203,3 +203,65 @@
 #overlay-block-list li {
     cursor: pointer;
 }
+
+
+.confirmation_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirmation_info td, th, tr {
+    text-align: center;
+}
+
+.confirmation_info table {
+    margin: 0 auto;
+}
+
+.confirmation_info table:first-of-type {
+    width: 25%;
+    margin-bottom: 15px;
+}
+
+.confirmation_info table:last-of-type {
+    width: 60%;
+    margin-bottom: 30px;
+}
+
+/* .confirmation_info table:last-of-type th {
+    width: 10%;
+} */
+
+.confirmation_info table:last-of-type #counter {
+    width: 3%;
+}
+
+/* .confirmation_info table:last-of-type #name {
+    width: 20%;
+}
+
+.confirmation_info table:last-of-type #block {
+    width: 15%;
+} */
+
+.confirmation_info table:last-of-type #lot {
+    width: 5%;
+}
+
+.confirmation_info table:last-of-type #plot {
+    width: 5%;
+}
+
+.confirmation_info table:last-of-type #dateOfDeath {
+    width: 15%;
+}
+
+.confirmation_info table:last-of-type #age {
+    width: 10%;
+}
+
+.confirmation_info h3 {
+    margin-bottom: 30px;
+}

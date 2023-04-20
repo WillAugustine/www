@@ -190,11 +190,11 @@
         <!-- <pre> -->
             <div class="form-group">
                 <label for="firstName"><span class="required">First Name</span>:</label>
-                <input type="text" name="firstName" id="firstName" />
+                <input type="text" name="firstName" id="firstName" required/>
             </div>
             <div class="form-group">
                 <label for="lastName"><span class="required">Last Name</span>:</label>
-                <input type="text" name="lastName" id="lastName" />
+                <input type="text" name="lastName" id="lastName" required/>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>

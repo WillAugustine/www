@@ -11,6 +11,7 @@
     if (isset($_GET['logout'])) {
         // Destroy the session and all variables associated with it
         session_destroy();
+        session_unset();
         // Redirect user back to landing page (index.php)
         header("Location: ./");
     }

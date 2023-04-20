@@ -13,8 +13,8 @@
             </script>';
     }
 
-    if (isset($_GET['id'])) {
-        $user_link = $_GET['id'];
+    if (isset($_SESSION['user_link'])) {
+        $user_link = $_SESSION['user_link'];
 
         define("DB_SERVER", "localhost");
         define("DB_USER", "ButteArchives");
@@ -37,14 +37,14 @@
         $currentData = $result->fetch_assoc();
         $user_firstName = $currentData['firstName'];
         $user_lastName = $currentData['lastName'];
-        $user_email = $currentData['email'];
+        $user_email = empty($currentData['email']) ? "not provided" : $currentData['email'];
         $user_DoV = $currentData['dateOfVisit'];
         if (array_key_exists('email_sent', $_POST)) {
             $subject = $user_firstName . " " . $user_lastName . "'s Butte Archives Link for " . $user_DoV;
 
             $folder = explode("email_user", $_SERVER['REQUEST_URI'])[0];
 
-            $link = $_SERVER['HTTP_HOST'] . $folder . "cemeteryVisit.php?id=" . $user_link;
+            $link = $_SERVER['HTTP_HOST'] . $folder . "visitor.php?id=" . $user_link;
 
             $body = 'Thanks for visiting the Butte Archives! 
             %0D%0A%0D%0AHere is the link for your visit to the Saint Patrick Cemetery: 
@@ -52,46 +52,82 @@
 
             $subject = str_replace(' ', '%20', $subject);
             $body = str_replace(' ', '%20', $body);
+            $user_email = ($user_email === "not provided") ? "" : $user_email;
             sendEmail($user_email, $subject, $body);
         }
-        printf("Does the following infomormation look correct for %s %s?\n", $user_firstName, $user_lastName);
-        echo "<br><br>";
-        echo '
-            <table style="width:250px">
-                <tr>
-                    <th>Email</th>
-                    <th>Date of visit</th>
-                </tr>
-                    <td text-align="center">'.$user_email.'</td>
-                    <td>'.$user_DoV.'</td>
-            </table>
-        ';
-        echo "<br><h3>Headstones:</h3><br>";
-        echo '
-            <table style="width:750px">
-                <tr>
-                    <th style="width:10%">Block</th>
-                    <th style="width:10%">Lot</th>
-                    <th style="width:10%">Plot</th>
-                    <th>Name</th>
-                </tr>
-            </table><br><br>
-        ';
+        // Retrieve headstone IDs from HeadstonesForLinks table
+        if ($stmt = $conn->prepare("SELECT * FROM `HeadstonesForLinks` WHERE `userLink`=?")) {
+            $stmt->bind_param("s", $user_link);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $headstoneData = $result->fetch_assoc();
+        } else {
+            die("Error: ". $conn->error);
+        }
+
+        // Retrieve headstone information from ButteArchivesRecords table
+        $headstoneIDs = array();
+        for ($i = 1; $i <= 5; $i++) {
+            if (isset($headstoneData["headstoneID_$i"])) {
+                array_push($headstoneIDs, $headstoneData["headstoneID_$i"]);
+            }
+        }
+        $in = str_repeat('?,', count($headstoneIDs) - 1) . '?';
+        if ($stmt = $conn->prepare("SELECT * FROM `ButteArchivesRecords` WHERE `ID` IN ($in)")) {
+            $stmt->bind_param(str_repeat('i', count($headstoneIDs)), ...$headstoneIDs);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        } else {
+            die("Error: ". $conn->error);
+        }
     };
-    $subject = "Butte Archives Link";
-
-    $folder = explode("email_user", $_SERVER['REQUEST_URI'])[0];
-
-    $link = $_SERVER['HTTP_HOST'] . $folder . "cemeteryVisit.php?id=" . $user_link;
-
-    $body = 'Thanks for visiting the Butte Archives! 
-    %0D%0A%0D%0AHere is the link for your visit to the Saint Patrick Cemetery: 
-    %0D%0Ahttp://'.$link;
-
-    $subject = str_replace(' ', '%20', $subject);
-    $body = str_replace(' ', '%20', $body);
-
-    echo '<form method ="post">
-            <input type="submit" name="email_sent" class="button" value="Yes" />
-        </form>';
 ?>
+<div class='confirmation_info'>
+    <h2>Does the following information look correct for <?php echo $user_firstName." ".$user_lastName ?>?</h2>
+
+    <h3>Visitor Information:</h3>
+
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Date of visit</th>
+        </tr>
+            <td><?php echo $user_email ?></td>
+            <td><?php echo $user_DoV ?></td>
+    </table>
+
+    <h3>Headstones they're visiting:</h3>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Block</th>
+            <th>Lot</th>
+            <th>Plot</th>
+            <th>Date of Death</th>
+            <th>Age</th>
+        </tr>
+
+        <?php
+        $counter = 1;
+        while ($row = $result->fetch_assoc()) { ?>
+            <tr>
+                <td id="counter"><?php echo $counter ?></td>
+                <td id="name"><?php echo $row['name'] ?></td>
+                <td id="block"><?php echo $row['block'] ?></td>
+                <td id="lot"><?php echo $row['lot'] ?></td>
+                <td id="plot"><?php echo $row['plot'] ?></td>
+                <td id="dateOfDeath"><?php echo date('m-d-Y', strtotime($row['dateOfDeath'])) ?></td>
+                <td id="age"><?php echo $row['age'] ?></td>
+            </tr>
+            <?php
+            $counter++; 
+        } ?>
+    </table>
+
+    <form method ="post">
+        <input type="submit" name="email_sent" class="button" value="Yes" />
+        <input type="submit" name="incorrect_info" class="button" value="No" />
+    </form>
+</div>
