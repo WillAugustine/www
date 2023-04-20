@@ -140,6 +140,11 @@
                     showOverlay();
                 }
             });
+
+            document.querySelector("#overlay").addEventListener("click", hideOverlay);
+            document.querySelector("#overlay-content").addEventListener("click", (event) => {
+                event.stopPropagation();
+            });
         </script>';
         exit();
     }
