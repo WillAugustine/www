@@ -48,6 +48,8 @@
 
         $title = $creating_account ? "$visitor_name's Visit" : $title;
 
+        $left_message = "";
+
         // Drop down menu
         $profile_menu = "
         <div class='dropdown'>

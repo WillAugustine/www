@@ -41,52 +41,84 @@
 
     if (isset($_REQUEST['add_headstones']))
     {
+        $sql = "
+            SELECT  
+                (headstoneID_1 IS NOT NULL) + 
+                (headstoneID_2 IS NOT NULL) + 
+                (headstoneID_3 IS NOT NULL) + 
+                (headstoneID_4 IS NOT NULL) + 
+                (headstoneID_5 IS NOT NULL) AS headstone_index
+            FROM HeadstonesForLinks
+            WHERE userLink = ?
+        ";
+        $conn = new mysqli(DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE);
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $_SESSION['user_link']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        $conn->close();
+
+        $_SESSION['headstone_index'] = $row['headstone_index'];
         $visitor_name = isset($_SESSION['visitor_name']) ? $_SESSION['visitor_name'] : "the user";
         $index = isset($_SESSION['headstone_index']) ? $_SESSION['headstone_index'] : 0;
         $block = isset($_SESSION['block']) ? $_SESSION['block'] : "";
         echo '
         <div class="visitor_information">
             <h3>Where would '.$visitor_name.' like to visit?</h3>
-            <p>Current headstones: '.$index.' / 5
-            <form action="create_new_user.php?submit_headstone" method="post">
-                
-                <div class="form-group">
-                    <label for="name"><span class="required">Name</span>:</label>
-                    <input type="text" name="name" id="name" required />
-                </div>
-                <div class="form-group">
-                    <label for="block"><span class="required">Block</span>:</label>
-                    <div class="input-group">
-                        <input type="text" name="block" id="block" required readonly/>
-                        <span class="input-group-addon" onclick="showOverlay()">&#128269;</span>
+            <div class="invalid"><p>Current headstones: '.$index.' / 5</p></div>';
+        if ($index >= 5) {
+            echo '<div class="invalid"><p>You cannot add any more headstones to this search!</p></div>';
+        }
+        else {
+            echo '
+                <form action="create_new_user.php?submit_headstone" method="post">
+                    
+                    <div class="form-group">
+                        <label for="name"><span class="required">Name</span>:</label>
+                        <input type="text" name="name" id="name" required />
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="lot"><span class="required">Lot</span>:</label>
-                    <input type="text" name="lot" id="lot" required/>
-                </div>
-                <div class="form-group">
-                    <label for="plot"><span class="required">Plot</span>:</label>
-                    <input type="text" name="plot" id="plot" required/>
-                </div>
-                <div class="form-group">
-                    <label for="dateOfDeath">Date of Death:</label>
-                    <input type="date" name="dateOfDeath" id="dateOfDeath" />
-                </div>
-                <div class="form-group">
-                    <label for="age">Age:</label>
-                    <input type="text" name="age" id="age" />
-                </div>
-                <div class="form-group">
-                    <label for="undertaker">Undertaker:</label>
-                    <input type="text" name="undertaker" id="undertaker" />
-                </div>
-                <div class="required-text">* means required</div>
-                <input type="submit" value="Add Headstone" />
-            </form>
-            <form action="email_user.php" method="post">
+                    <div class="form-group">
+                        <label for="block"><span class="required">Block</span>:</label>
+                        <div class="input-group">
+                            <input type="text" name="block" id="block" required readonly/>
+                            <span class="input-group-addon" onclick="showOverlay()">&#128269;</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lot"><span class="required">Lot</span>:</label>
+                        <input type="text" name="lot" id="lot" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="plot"><span class="required">Plot</span>:</label>
+                        <input type="text" name="plot" id="plot" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfDeath">Date of Death:</label>
+                        <input type="date" name="dateOfDeath" id="dateOfDeath" />
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="text" name="age" id="age" />
+                    </div>
+                    <div class="form-group">
+                        <label for="undertaker">Undertaker:</label>
+                        <input type="text" name="undertaker" id="undertaker" />
+                    </div>
+                    <div class="required-text">* means required</div>
+                    <input type="submit" id="" value="Add Headstone" />
+                </form>';
+        }
+        if ($index > 0) {
+            echo '<form action="email_user.php" method="post">
                 <input type="submit" value="Done" />
-            </form>
+            </form>';
+        }
+        echo '    
         </div>
         <div id="overlay" style="display: none;">
             <div id="overlay-content">

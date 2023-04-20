@@ -113,7 +113,8 @@
 
 .visitor_information form input[type="submit"] {
     display: block;
-    margin: 0 auto;
+    margin: 10px auto;
+
 }
 
 .visitor_information .required::before {
@@ -230,21 +231,9 @@
     margin-bottom: 30px;
 }
 
-/* .confirmation_info table:last-of-type th {
-    width: 10%;
-} */
-
 .confirmation_info table:last-of-type #counter {
     width: 3%;
 }
-
-/* .confirmation_info table:last-of-type #name {
-    width: 20%;
-}
-
-.confirmation_info table:last-of-type #block {
-    width: 15%;
-} */
 
 .confirmation_info table:last-of-type #lot {
     width: 5%;
@@ -255,7 +244,7 @@
 }
 
 .confirmation_info table:last-of-type #dateOfDeath {
-    width: 15%;
+    width: 20%;
 }
 
 .confirmation_info table:last-of-type #age {
@@ -264,4 +253,24 @@
 
 .confirmation_info h3 {
     margin-bottom: 30px;
+}
+
+.confirmation_info #confirmation-button {
+    border-radius: 4px;
+    background-color: #3264a8;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.confirmation_info #confirmation-button:hover {
+    cursor: pointer;
+}
+
+. #confirmation-button {
+    cursor: pointer;
 }

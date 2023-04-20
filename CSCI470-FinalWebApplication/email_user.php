@@ -13,6 +13,11 @@
             </script>';
     }
 
+    if (array_key_exists('incorrect_info', $_POST)) {
+        echo "Oh no!";
+        exit();
+    }
+
     if (isset($_SESSION['user_link'])) {
         $user_link = $_SESSION['user_link'];
 
@@ -127,7 +132,7 @@
     </table>
 
     <form method ="post">
-        <input type="submit" name="email_sent" class="button" value="Yes" />
-        <input type="submit" name="incorrect_info" class="button" value="No" />
+        <input type="submit" name="email_sent" id="confirmation-button" value="Yes" />
+        <input type="submit" name="incorrect_info" id="confirmation-button" value="No" />
     </form>
 </div>
