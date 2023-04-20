@@ -3,33 +3,12 @@
     include("header.php");
 
     $block = $_SESSION['block'];
+    // echo "block: " . $block . "<br>";
 
     // Connect to the database
     $conn = new mysqli('localhost', 'ButteArchives', 'password', 'CemeteryLocatorApplication');
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Check if the "done highlighting" button was clicked
-    if (isset($_GET['request'])) {
-        // Get the highlighting data from the form
-        $maxX = $_POST['maxX'];
-        $minX = $_POST['minX'];
-        $maxY = $_POST['maxY'];
-        $minY = $_POST['minY'];
-
-        echo "($minX, $minY) -> ($maxX, $maxY)<br>";
-        // Insert the highlighting data into the Highlights table
-        $stmt = $conn->prepare("INSERT INTO Highlights (maxX, minX, maxY, minY) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("dddd", $maxX, $minX, $maxY, $minY);
-        if($stmt->execute()){
-            // header("Location: create_new_user.php?add_headstones");
-        } else {
-            echo "ERROR: " . $stmt->error . "<br>";
-        }
-
-        $stmt->close();
-        exit();
     }
     
     if ($block !== null) {
@@ -51,6 +30,15 @@
     <!-- Add a canvas element to draw the highlights on -->
     <canvas id="highlight-canvas"></canvas>
 </div>
+
+<form action="populate_records.php" method="post">
+    <input type="hidden" name="maxX" value="" id="maxX">
+    <input type="hidden" name="minX" value="" id="minX">
+    <input type="hidden" name="maxY" value="" id="maxY">
+    <input type="hidden" name="minY" value="" id="minY">
+    <input type="hidden" name="imageWidth" value="" id="imageWidth">
+    <input type="submit" value="Done Highlighting">
+</form>
 
 <script>
     // Get references to the image and canvas elements
@@ -81,6 +69,13 @@
             // This is the second click, so store the end coordinates
             highlightEndX = event.offsetX;
             highlightEndY = event.offsetY;
+
+            // Update the values of the hidden input fields
+            document.querySelector('#maxX').value = Math.max(highlightStartX, highlightEndX);
+            document.querySelector('#minX').value = Math.min(highlightStartX, highlightEndX);
+            document.querySelector('#maxY').value = Math.max(highlightStartY, highlightEndY);
+            document.querySelector('#minY').value = Math.min(highlightStartY, highlightEndY);
+            document.querySelector('#imageWidth').value = blockImage.width;
 
             ctx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
 
@@ -125,17 +120,3 @@
 
     
 </script>
-
-<?php echo $highlightEndX?>
-<?php echo $highlightStartX?>
-<?php echo $highlightEndY?>
-<?php echo $highlightStartY?>
-
-<form action="highlight_record.php?request" method="post">
-    <input type="hidden" id="maxX" name="maxX" value='<?php echo $highlightEndX?>'>
-    <input type="hidden" id="minX" name="minX" value='<?php echo $highlightStartX?>' >
-    <input type="hidden" id="maxY" name="maxY" value='<?php echo $highlightEndY?>'>
-    <input type="hidden" id="minY" name="minY" value='<?php echo $highlightStartY?>' >
-    <input type="submit" value="Done Highlighting">
-</form>
-    

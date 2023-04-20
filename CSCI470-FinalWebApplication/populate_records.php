@@ -1,207 +1,66 @@
-<link href="style.css" rel="stylesheet" />
 <?php
 
-    include_once('header.php');
-    if (isset($_GET['link'])) {
-        $user_link = $_GET['link'];
-        echo "Where does the user with code " . $user_link . " want to go?";
-    };
-
+    session_start();
     define("DB_SERVER", "localhost");
     define("DB_USER", "ButteArchives");
     define("DB_PASSWORD", 'password');
     define("DB_DATABASE", "CemeteryLocatorApplication");
 
-    if (isset($_REQUEST['attempt']))
-    {
-        $user_link = $_POST['link'];
-        $block = $_POST['block'];
-        $lot = $_POST['lot'];
-        $plot = $_POST['plot'];
-        $name = $_POST['name'];
-        $index = (int)$_POST['headstoneIndex'];
-        $index += 1;
-        $DoD = "";
-        $age = "";
-        $undertaker = "";
+    // Connect to the database
+    $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
+    if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );
+    $maxX = $_POST['maxX'];
+    $minX = $_POST['minX'];
+    $maxY = $_POST['maxY'];
+    $minY = $_POST['minY'];
+    $imageWidth = $_POST['imageWidth'];
 
-        
+    echo "($minX, $minY) -> ($maxX, $maxY)<br>";
+    // Insert the highlighting data into the Highlights table
+    $stmt = $conn->prepare("INSERT INTO Highlights (maxX, minX, maxY, minY, imageWidth) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ddddd", $maxX, $minX, $maxY, $minY, $imageWidth);
+    if($stmt->execute()){
+        $sql = "SELECT LAST_INSERT_ID()";
+        $result = $conn->query($sql);
+        $highlightID = $result->fetch_assoc()['LAST_INSERT_ID()'];
+        echo $highlightID . "<br>";
+        $name = empty($_SESSION["name"]) ? null : $_SESSION["name"];
+        $block = empty($_SESSION["block"]) ? null : $_SESSION["block"];
+        echo "block: '" . $block . "'<br>";
+        $lot = empty($_SESSION["lot"]) ? null : $_SESSION["lot"];
+        $plot = empty($_SESSION["plot"]) ? null : $_SESSION["plot"];
+        $DoD = empty($_SESSION["dateOfDeath"]) ? null : $_SESSION["dateOfDeath"];
+        $age = empty($_SESSION["age"]) ? null : $_SESSION["age"];
+        $undertaker = empty($_SESSION["undertaker"]) ? null : $_SESSION["undertaker"];
+        $stmt = $conn->prepare("INSERT INTO ButteArchivesRecords
+            (block, lot, plot, name, dateOfDeath, age, undertaker, highlightID)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("siissssi", $block, $lot, $plot, $name, $DoD, $age, $undertaker, $highlightID);
+        if($stmt->execute()){
+            $sql = "SELECT LAST_INSERT_ID()";
+            $result = $conn->query($sql);
+            $blockID = $result->fetch_assoc()['LAST_INSERT_ID()'];
+            $index = $_SESSION['headstone_index'];
+            $colToPopulate = "headstoneID_".$index;
+            $visitor_link = $_SESSION['user_link'];
+            $stmt = $conn->prepare("UPDATE HeadstonesForLinks SET $colToPopulate = ? WHERE userLink = ?");
+            $stmt->bind_param("is", $blockID, $visitor_link);
+            if ($stmt->execute()) {
+                header("Location: create_new_user.php?add_headstones");
 
-        
-        $sql_insert_variables =  "INSERT INTO ButteArchivesRecords (block, lot, plot, name";
-        $sql_insert_values = "VALUES (" . $block . ", " . $lot . ", " . $plot . ", '" . $name . "'";
-
-        if (!empty($_POST['dateOfDeath'])) {
-            $DoD = $_POST['dateOfDeath'];
-            $sql_insert_variables .= ", dateOfDeath";
-            $sql_insert_values .= ", STR_TO_DATE('" . $DoD . "', '%Y-%m-%d')";
-        }
-        if (!empty($_POST['age'])) {
-            $age = $_POST['age'];
-            $sql_insert_variables .= ", age";
-            $sql_insert_values .= ", '" . $age . "'";
-        }
-        if (!empty($_POST['undertaker'])) {
-            $undertaker = $_POST['undertaker'];
-            $sql_insert_variables .= ", undertaker";
-            $sql_insert_values .= ", '" . $undertaker . "'";
-        }
-        
-        $sql_insert_variables .= ") ";
-        $sql_insert_values .= ")";
-        $sql = $sql_insert_variables . $sql_insert_values;
-
-        if (array_key_exists('newInformation', $_POST)) {
-            if ($delete_sql = $conn->prepare("DELETE FROM `ButteArchivesRecords` WHERE 
-            `block`=? AND 
-            `lot`=? AND 
-            `plot`=?")) {
-                $stmt->bind_param("iii", $block, $lot, $plot);
             } else {
-                die("Error deleting data: ". $conn->error);
+                echo "ERROR (HeadstonesForLinks): " . $stmt->error . "<br>";
             }
-            $stmt->execute();
-            $stmt->close();
-            $conn->query($sql);
-            header("Location: add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index");
-        }
-        else if (array_key_exists('currInformation', $_POST)) {
-            if ($delete_sql = $conn->prepare("DELETE FROM `ButteArchivesRecords` WHERE 
-            `block`=? AND 
-            `lot`=? AND 
-            `plot`=?")) {
-                $stmt->bind_param("iii", $block, $lot, $plot);
-            } else {
-                die("Error deleting data: ". $conn->error);
-            }
-            $stmt->execute();
-            $stmt->close();
-            $conn->query($sql);
-            header("Location: add_headstones.php?link=' . $user_link . '&headstoneIndex=' . $index");
-        }
-        
-        // echo "user link: " . $user_link . "<br>";
-        // echo "block: " . $block . "<br>";
-        // echo "lot: " . $lot . "<br>";
-        // echo "plot: " . $plot . "<br>";
-        // echo "name: " . $name . "<br>";
-        // echo "index: " . $index . "<br>";
-
-        // connect to the database
-        $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
-        if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );
-
-        // Select data with block, lot, polt, name from ButteArchivesRecords
-        if ($stmt = $conn->prepare("SELECT * FROM `ButteArchivesRecords` WHERE 
-            `block`=? AND 
-            `lot`=? AND 
-            `plot`=?")) {
-            $stmt->bind_param("iii", $block, $lot, $plot);
-
         } else {
-            die("Error selecting data: ". $conn->error);
+            echo "ERROR (ButteArchivesRecords): " . $stmt->error . "<br>";
         }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $currentData = $result->fetch_assoc();
-        
 
-        if (isset($currentData)) {
-            echo "There is already someone buried at
-            ".$block."-".$lot."-".$plot."!<br><br>";
-            $currentName = $currentData['name'];
-            $currentDoD = $currentData['dateOfDeath'];
-            $currentAge = $currentData['age'];
-            $currentUndertaker = $currentData['undertaker'];
-            echo "Please select which is correct:<br><br>";
-            echo '
-            <table style="width:100%">
-                <tr>
-                    <th>Details</th>
-                    <th>Information you inputted</th>
-                    <th>Information currently in records</th>
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td>'.$name.'</td>
-                    <td>'.$currentName.'</td>
-                </tr>
-                <tr>
-                    <td>Date of Death</td>
-                    <td>'.$DoD.'</td>
-                    <td>'.$currentDoD.'</td>
-                </tr>
-                <tr>
-                    <td>Age</td>
-                    <td>'.$age.'</td>
-                    <td>'.$currentAge.'</td>
-                </tr>
-                <tr>
-                    <td>Undertaker</td>
-                    <td>'.$undertaker.'</td>
-                    <td>'.$currentUndertaker.'</td>
-                </tr>
-            </table><br><br>';
-
-            echo '
-            <form method="post">
-                <input type="submit" name="newInformation" class="button" value="The information I inputted is correct" />
-            </form>';
-
-            echo '
-            <form method="post">
-                <input type="submit" name="currInformation" class="button" value="The current information is correct" />
-            </form>';
-            
-
-        } else {
-            // echo "currentData is NOT set<br>";
-            // echo "sql: '" . $sql . "<br>";
-            if ( $conn->query($sql) ) {
-                echo "Added data!<br>";
-                if ($stmt = $conn->prepare("SELECT * FROM `ButteArchivesRecords` WHERE 
-                    `block`=? AND 
-                    `lot`=? AND 
-                    `plot`=? AND
-                    `name`=?")) {
-                    $stmt->bind_param("iiis", $block, $lot, $plot, $name);
-
-                } else {
-                    die("Error selecting data: ". $conn->error);
-                }
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $currentData = $result->fetch_assoc();
-                
-                // echo "currentData: '$currentData'<br>";
-                if (isset($currentData)) {
-                    $headstoneID = $currentData['ID'];
-                }
-                echo '<a class="button" href="add_headstone_to_visit.php?link=' . $user_link . '&headstoneID='.$headstoneID.'&index=' . $index . '">Continue</a>';
-
-            } else {
-                echo "Error adding data: " . $conn->error . "<br>";
-            }
-        }
-        $stmt->close();
-
-        
-        
-
-
-        // If an entry exists, prompt user to select which one is correct
-        //      If new info if correct, update ButteArchivesRecords with new information
-        //      If current info is correct, set values equal to current info
-
-
-        // $stmt = $conn->prepare("INSERT INTO Users (firstName, lastName, email, dateOfVisit, uniqueLink)
-        //     VALUES (?, ?, ?, ?, ?)");
-        // $stmt->bind_param("sssss", $user_firstName, $user_lastName, $user_email, $user_DoV, $newUserCode);
-        // if ( $stmt->execute() ) {
-
-        //     header("Location: add_headstones.php?id=".$newUserCode);
-        // }
-        // $stmt->close();
-        // $conn->close();
+        // header("Location: create_new_user.php?add_headstones");
+    } else {
+        echo "ERROR: " . $stmt->error . "<br>";
     }
+
+    $stmt->close();
+    exit();
+
 ?>

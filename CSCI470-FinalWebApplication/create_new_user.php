@@ -34,7 +34,8 @@
                 $_SESSION[$item] = $_POST[$item];
             }
         }
-        header("Location: highlight_record.php?block=$block");
+        $_SESSION['block'] = $block;
+        header("Location: highlight_record.php");
     }
 
 
@@ -61,12 +62,12 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="lot">Lot:</label>
-                    <input type="text" name="lot" id="lot" />
+                    <label for="lot"><span class="required">Lot</span>:</label>
+                    <input type="text" name="lot" id="lot" required/>
                 </div>
                 <div class="form-group">
-                    <label for="plot">Plot:</label>
-                    <input type="text" name="plot" id="plot" />
+                    <label for="plot"><span class="required">Plot</span>:</label>
+                    <input type="text" name="plot" id="plot" required/>
                 </div>
                 <div class="form-group">
                     <label for="dateOfDeath">Date of Death:</label>
@@ -82,6 +83,9 @@
                 </div>
                 <div class="required-text">* means required</div>
                 <input type="submit" value="Add Headstone" />
+            </form>
+            <form action="email_user.php" method="post">
+                <input type="submit" value="Done" />
             </form>
         </div>
         <div id="overlay" style="display: none;">
