@@ -35,13 +35,16 @@
     <canvas id="highlight-canvas"></canvas>
 </div>
 
-<form action="populate_records.php" method="post">
+<form action="populate_records.php" method="post" class="done-highlighting">
     <input type="hidden" name="maxX" value="" id="maxX">
     <input type="hidden" name="minX" value="" id="minX">
     <input type="hidden" name="maxY" value="" id="maxY">
     <input type="hidden" name="minY" value="" id="minY">
     <input type="hidden" name="imageWidth" value="" id="imageWidth">
     <input type="submit" value="Done Highlighting">
+</form>
+<form action="create_new_user.php?add_headstones" method="post" class="done-highlighting">
+    <input type="submit" value="Back">
 </form>
 
 <script>
@@ -122,5 +125,15 @@
         highlightCanvas.style.left = `${blockImage.offsetLeft}px`;
     });
 
+    // Add an event listener for the resize event on the window object
+    window.addEventListener('resize', () => {
+        // Set the canvas size to match the image size
+        highlightCanvas.width = blockImage.width;
+        highlightCanvas.height = blockImage.height;
+
+        // Set the canvas position to match the image position
+        highlightCanvas.style.top = `${blockImage.offsetTop}px`;
+        highlightCanvas.style.left = `${blockImage.offsetLeft}px`;
+    });
     
 </script>

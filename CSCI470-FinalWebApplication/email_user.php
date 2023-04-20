@@ -6,6 +6,7 @@
     function sendEmail($to, $subject, $body) {
         $email_link = "mailto:$to?subject=$subject&body=$body";
         $email_link = str_replace( PHP_EOL, '', $email_link);
+        unset($_SESSION['visitor_name']);
         echo '
             <script type="text/javascript">
                 window.location.href = "'.$email_link.'";
@@ -43,7 +44,7 @@
         $user_firstName = $currentData['firstName'];
         $user_lastName = $currentData['lastName'];
         $user_email = empty($currentData['email']) ? "not provided" : $currentData['email'];
-        $user_DoV = $currentData['dateOfVisit'];
+        $user_DoV = date('m-d-Y', strtotime($currentData['dateOfVisit']));
         if (array_key_exists('email_sent', $_POST)) {
             $subject = $user_firstName . " " . $user_lastName . "'s Butte Archives Link for " . $user_DoV;
 
@@ -98,7 +99,7 @@
             <th>Date of visit</th>
         </tr>
             <td><?php echo $user_email ?></td>
-            <td><?php echo $user_DoV ?></td>
+            <td><?php echo date('m-d-Y', strtotime($user_DoV)) ?></td>
     </table>
 
     <h3>Headstones they're visiting:</h3>

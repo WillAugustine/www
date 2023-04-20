@@ -69,13 +69,14 @@
         $block = isset($_SESSION['block']) ? $_SESSION['block'] : "";
         echo '
         <div class="visitor_information">
-            <h3>Where would '.$visitor_name.' like to visit?</h3>
-            <div class="invalid"><p>Current headstones: '.$index.' / 5</p></div>';
+            <h3>Where would '.$visitor_name.' like to visit?</h3>';
         if ($index >= 5) {
-            echo '<div class="invalid"><p>You cannot add any more headstones to this search!</p></div>';
+            echo '<div class="invalid"><p>You cannot add any more headstones to this search!</p></div>
+            <div class="invalid"><p>Current headstones: '.$index.' / 5</p></div>';
         }
         else {
             echo '
+                <p>Current headstones: '.$index.' / 5</p>
                 <form action="create_new_user.php?submit_headstone" method="post">
                     
                     <div class="form-group">

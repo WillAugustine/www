@@ -4,6 +4,12 @@
     if (isset($_GET['id'])) {
         $user_link = $_GET['id'];
 
+        if (isset($_GET['feedback'])) {
+            echo "Please provide feedback!<br>";
+            exit();
+        }        
+
+
         define("DB_SERVER", "localhost");
         define("DB_USER", "ButteArchives");
         define("DB_PASSWORD", 'password');
