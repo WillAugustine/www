@@ -3,10 +3,14 @@
     include("header.php");
 
     $block = $_SESSION['block'];
-    // echo "block: " . $block . "<br>";
+    
+    define("DB_SERVER", "localhost");
+    define("DB_USER", "ButteArchives");
+    define("DB_PASSWORD", 'password');
+    define("DB_DATABASE", "CemeteryLocatorApplication");
 
     // Connect to the database
-    $conn = new mysqli('localhost', 'ButteArchives', 'password', 'CemeteryLocatorApplication');
+    $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
