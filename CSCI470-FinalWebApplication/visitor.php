@@ -1,10 +1,13 @@
 <?php
-
-    include('header.php?visitor');
     if (isset($_GET['id'])) {
+        session_start();
+        $_SESSION['visitor'] = true;
+        $_SESSION['user_link'] = $_GET['id'];
+        include('header.php');
+
         $user_link = $_GET['id'];
 
-        if (isset($_GET['feedback'])) {
+        if (isset($_REQUEST['feedback'])) {
             echo "Please provide feedback!<br>";
             exit();
         }        

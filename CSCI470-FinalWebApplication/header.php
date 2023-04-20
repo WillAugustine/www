@@ -12,19 +12,28 @@
 </head>
 
 <?php
+    $visitor = isset($_SESSION['visitor']) ? $_SESSION['visitor'] : false;
 
-    if (isset($_GET['visitor'])) {
-        $button_message = "
+    if ($visitor) {
+        $link = isset($_SESSION['user_link']) ? $_SESSION['user_link'] : "";
+        $left_message = "
         <div class='dropdown'>
-            <button class='dropbtn'>Options</button>
+            <button class='dropbtn'>
+                <div class='hamburger-icon'>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
             <div class='dropdown-content' style='left:0;'>
-                <a href='create_new_user.php'>Create Visitor</a>
-                <a href='view_feedback.php'>View Feedback</a>
-                <a href='login.php?logout'>Logout</a>
+                <a href='visitor.php?id=$link'>View Map</a>
+                <a href='visitor.php?id=$link&feedback'>Give Feedback</a>
+                <a href='visitor.php?id=$link&block_layout'>View Block Layout</a>
             </div>
         </div>";
+        $right_message = "<a href='visitor.php?id=$link&block_image' id='login-button'>Block Record</a>";
+        $title = "Saint Patrick Cemetery Locator";
 
-        exit();
     }
     else {
         // Starts session
@@ -64,10 +73,10 @@
         // If the user is logged in
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
             // Set the button in the top right to profile drop-down menu
-            $button_message = $profile_menu;
+            $right_message = $profile_menu;
         } else {
             // If user is not logged in, set button in top right of every page to "login"
-            $button_message = "<a href='login.php' id='login-button'>Login</a>";
+            $right_message = "<a href='login.php' id='login-button'>Login</a>";
         }
     }
     
@@ -75,9 +84,9 @@
 
 <!-- Creates the header elements in line seperated in thirds (hence first element being blank) -->
 <div class="header">
-    <div class="item"><span><?php echo $left_message ?></span></div>
+    <div class="item" id="left"><span><?php echo $left_message ?></span></div>
     <div class="item"><span><h1><?php echo $title ?></h1></span></div>
-    <div class="item"><span><?php echo $button_message; ?></span></div>
+    <div class="item" id="right"><span><?php echo $right_message; ?></span></div>
 </div>
 <hr>
 <br>

@@ -47,6 +47,17 @@
     <input type="submit" value="Back">
 </form>
 
+<div class="highlight-overlay">
+  <div class="overlay-content">
+    <p>Instructions for highlighting:</p>
+    <ul>
+      <li>Click once to start highlighting</li>
+      <li>Click again to finish highlighting</li>
+    </ul>
+    <button id="close-overlay">OK</button>
+  </div>
+</div>
+
 <script>
     // Get references to the image and canvas elements
     const blockImage = document.querySelector('#block-image');
@@ -134,6 +145,27 @@
         // Set the canvas position to match the image position
         highlightCanvas.style.top = `${blockImage.offsetTop}px`;
         highlightCanvas.style.left = `${blockImage.offsetLeft}px`;
+    });
+
+    // Get references to the overlay and close button elements
+    const overlay = document.querySelector('.highlight-overlay');
+    const closeOverlayButton = document.querySelector('#close-overlay');
+
+    // Show the overlay when the page loads
+    window.addEventListener('load', () => {
+    overlay.style.display = 'block';
+    });
+
+    // Hide the overlay when the user clicks anywhere outside the overlay content
+    window.addEventListener('click', (event) => {
+    if (event.target === overlay) {
+        overlay.style.display = 'none';
+    }
+    });
+
+    // Hide the overlay when the user clicks the "OK" button
+    closeOverlayButton.addEventListener('click', () => {
+    overlay.style.display = 'none';
     });
     
 </script>
