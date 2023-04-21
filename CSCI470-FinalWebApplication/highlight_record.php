@@ -41,6 +41,7 @@
     <input type="hidden" name="maxY" value="" id="maxY">
     <input type="hidden" name="minY" value="" id="minY">
     <input type="hidden" name="imageWidth" value="" id="imageWidth">
+    <input type="hidden" name="imagePath" value="<?php echo $imagePath; ?>" id="imagePath">
     <input type="submit" value="Done Highlighting">
 </form>
 <form action="create_new_user.php?add_headstones" method="post" class="done-highlighting">
@@ -165,7 +166,7 @@
 
     // Hide the overlay when the user clicks the "OK" button
     closeOverlayButton.addEventListener('click', () => {
-    overlay.style.display = 'none';
+        overlay.style.display = 'none';
     });
     
 </script>

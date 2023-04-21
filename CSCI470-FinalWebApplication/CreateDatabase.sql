@@ -59,6 +59,7 @@ START TRANSACTION;
         `dateOfDeath` DATE,
         `age` VARCHAR(8),
         `undertaker` VARCHAR(255),
+        `blockImagePath` VARCHAR(255),
         `highlightID` INT,
         `coordinateID` INT,
         FOREIGN KEY (`highlightID`) REFERENCES `Highlights`(`ID`),

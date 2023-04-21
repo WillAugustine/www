@@ -1,17 +1,20 @@
-
 <link rel="stylesheet" href="styles.css">
 <?php
 
-    session_start();
+    function createNewSession() {
+        session_start();
 
-    session_destroy();
-    session_unset();
-    session_abort();
-    session_reset();
-
-    session_start();
-    $_SESSION['visitor'] = true;
-    $_SESSION['user_link'] = $_GET['id'];
+        session_destroy();
+        session_unset();
+        session_abort();
+        session_reset();
+    
+        session_start();
+        $_SESSION['visitor'] = true;
+        $_SESSION['user_link'] = $_GET['id'];
+    }
+    
+    createNewSession();
     include('header.php');
 
     $user_link = $_SESSION['user_link'];
@@ -21,8 +24,9 @@
     $db_password= "password";
     $db_database= "CemeteryLocatorApplication";
 
-    $block_layout = false;
-    $help = false; 
+    $block_layout = 'false';
+    $help = 'false';
+    $block_records = 'false';
 
     if (isset($_GET['id'])) {
 
@@ -30,16 +34,11 @@
             exit();
         }
 
-        if (isset($_REQUEST['block_records'])) {
-        }
+        $block_records = isset($_REQUEST['block_records']) ? 'true' : 'false';
+        
+        $block_layout = isset($_POST['block_layout']) ? 'true' : 'false';
 
-        if (isset($POST['block_layout'])) {
-            $block_layout = true;
-        }
-
-        if (isset($POST['help'])) {
-            $help = true;
-        }
+        $help = isset($_POST['help']) ? 'true' : 'false';
 
         // connect to the database
         $conn = new mysqli( $db_server, $db_username, $db_password, $db_database );
@@ -92,7 +91,7 @@
 
         // Query the BlockCoordinates, HeadstonesForLinks, and ButteArchivesRecords tables to get the headstone data for the user
         if ($stmt = $conn->prepare(
-            "SELECT bc.*, bar.block, bar.lot, bar.plot
+            "SELECT bc.*, bar.block, bar.lot, bar.plot, bar.dateOfDeath
             FROM BlockCoordinates bc
             JOIN ButteArchivesRecords bar ON bc.block = bar.block
             JOIN HeadstonesForLinks hfl ON bar.ID = hfl.headstoneID_1 OR bar.ID = hfl.headstoneID_2 OR bar.ID = hfl.headstoneID_3 OR bar.ID = hfl.headstoneID_4 OR bar.ID = hfl.headstoneID_5
@@ -110,28 +109,16 @@
                     'NW_long' => $row['NW_long'],
                     'block' => $row['block'],
                     'lot' => $row['lot'],
-                    'plot' => $row['plot']
+                    'plot' => $row['plot'],
+                    'DoD' => isset($row['dateOfDeath']) ? date('m-d-Y', strtotime($row['dateOfDeath'])) : "not provided"
                 ];
             }
         } else {
             die("Error: " . $conn->error);
         }
     };
-    echo "<pre>";
-    echo "POST: <br>";
-    print_r($_POST);
-    echo "<br>GET: <br>";
-    print_r($_GET);
-    echo "<br>REQUEST: <br>";
-    print_r($_REQUEST);
-    echo "<br>SESSION: <br>";
-    print_r($_SESSION);
-    echo "</pre><br>";
-    $block_layout_text = isset($_POST['block_layout']) ? $_POST['block_layout'] : "false";
-    $help_text = $help ? "true" : "false";
-    echo "block_layout = $block_layout_text <br>";
-    echo "help = $help_text <br>";
 ?>
+
 <div class="cemetery-map">
     <h2>Welcome, <?php echo htmlspecialchars($user_firstName) . ' ' . htmlspecialchars($user_lastName) ?>!</h2>
     <div class="map-container">
@@ -151,14 +138,16 @@
         </div>
     </div>
 </div>
+<div class="visitor-overlay">
 
-<!-- <div class="block-layout-overlay">
-    <img src="images/Block_Layout.jpg" alt="Block Layout" class="block-layout-overlay-image">
-</div> -->
+</div>
+
 
 <script>
-    let block_layout =  <?php echo json_encode($block_layout); ?>;
-    let help = <?php echo json_encode($help); ?>;
+    var block_layout = (<?php echo json_encode($block_layout); ?> === 'true');
+    var help = (<?php echo json_encode($help); ?> === 'true');
+    console.log("block_layout = " + block_layout + " has type " + typeof(block_layout));
+    console.log("help = " + help + " has type " + typeof(help));
 
     // Define an array of headstones with their latitude and longitude
     const headstones = <?php echo json_encode($headstones); ?>;
@@ -169,6 +158,12 @@
     // Get the cemetery container and image elements
     const cemeteryContainer = document.querySelector('#cemetery-container');
     const cemeteryImage = document.querySelector('#cemetery-image');
+    const overlay = document.querySelector('.visitor-overlay');
+
+    const headstoneInfo = document.createElement('div');
+    headstoneInfo.classList.add('headstone-info');
+    headstoneInfo.style.display = "none";
+    cemeteryContainer.appendChild(headstoneInfo);
 
     function updateHeadstones() {
         
@@ -196,8 +191,10 @@
             // Calculate the x position and width of the headstone on the image
             const x1 = (headstone.NW_long - topLeftLong) / (bottomRightLong - topLeftLong) * imageWidth;
             const x2 = (headstone.SE_long - topLeftLong) / (bottomRightLong - topLeftLong) * imageWidth;
-            const x = Math.min(x1, x2);
+            const minX = Math.min(x1, x2);
             const width = Math.abs(x1 - x2);
+            const x = ((minX + imageWidth * 0.05) + width/2)
+            
 
             // Calculate the y position and height of the headstone on the image
             const y1 = (topLeftLat - headstone.NW_lat) / (topLeftLat - bottomRightLat) * imageHeight;
@@ -206,33 +203,47 @@
             const height = Math.abs(y1 - y2);
 
             // Set the CSS properties for the headstone element
-            headstoneElement.style.position = 'absolute';
-            headstoneElement.style.left = ((x + imageWidth * 0.05) + width/2) + 'px';
+            headstoneElement.style.left = x + 'px';
             headstoneElement.style.top = y + 'px';
             headstoneElement.style.width = width + 'px';
             headstoneElement.style.height = height + 'px';
             headstoneElement.style.backgroundColor = headstoneColors[index % headstoneColors.length];
-            headstoneElement.style.opacity = 0.5;
 
-            const headstoneInfoElement = document.createElement('div');
-            // headstoneInfoElement.classList.add('block');
-            headstoneInfoElement.textContent = `Block: ${headstone.block}, Lot: ${headstone.lot}, Plot: ${headstone.plot}`;
-            headstoneInfoElement.style.display = 'none';
-
-            // Set the CSS properties for the headstoneInfoElement
-            headstoneInfoElement.style.position = 'absolute';
-            headstoneInfoElement.style.bottom = (height + 10) + 'px';
-            headstoneInfoElement.style.left = '50%';
-            headstoneInfoElement.style.transform = 'translateX(-50%)';
-            headstoneInfoElement.style.backgroundColor = '#fff';
-            headstoneInfoElement.style.padding = '5px 10px';
-            headstoneInfoElement.style.borderRadius = '5px';
-            headstoneInfoElement.style.boxShadow = '0 2px 4px rgba(0,0,0,.2)';
-
-
-            headstoneElement.appendChild(headstoneInfoElement);
             // Append the headstone element to the cemetery container
             cemeteryContainer.appendChild(headstoneElement);
+            headstoneElement.addEventListener('mouseover', () => {
+                const table1 = document.createElement('table');
+                table1.innerHTML = `
+                    <tr>
+                        <th>Block</th>
+                        <th>Lot</th>
+                        <th>Plot</th>
+                    </tr>
+                    <tr>
+                        <td>${headstone.block}</td>
+                        <td>${headstone.lot}</td>
+                        <td>${headstone.plot}</td>
+                    </tr>
+                `;
+                const table2 = document.createElement('table');
+                table2.innerHTML = `
+                    <tr>
+                        <th>Date of Death</th>
+                    </tr>
+                    <tr>
+                        <td>${headstone.DoD}</td>
+                    </tr>
+                `;
+                headstoneInfo.innerHTML = '';
+                headstoneInfo.appendChild(table1);
+                headstoneInfo.appendChild(table2);
+                headstoneInfo.style.display = 'block';
+                headstoneInfo.style.left = (x) + 'px';
+                headstoneInfo.style.top = (y - headstoneInfo.offsetHeight - 10) + 'px';
+            });
+            headstoneElement.addEventListener('mouseout', () => {
+                headstoneInfo.style.display = 'none';
+            });
         });
     }
     updateHeadstones();
@@ -240,41 +251,32 @@
     // Add an event listener for the resize event on the window object
     window.addEventListener('resize', updateHeadstones);
 
-    // Add an event listener for the mouseover event on the headstoneElement
-    headstoneElement.addEventListener('mouseover', () => {
-        headstoneInfoElement.style.display = 'block';
-    });
+    if (block_layout) {
+        const blockLayoutImage = document.createElement('img');
+        blockLayoutImage.src = "images/Block_Layout.jpg";
+        overlay.appendChild(blockLayoutImage);
+    } else if (help) {
+        const helpImage = document.createElement('img');
+        helpImage.src = "images/help.png";
+        overlay.appendChild(helpImage);
+    }
 
-    // Add an event listener for the mouseout event on the headstoneElement
-    headstoneElement.addEventListener('mouseout', () => {
-        headstoneInfoElement.style.display = 'none';
-    });
+    overlay.style.display = 'none';
 
-    const block_layout_overlay = document.querySelector('.block-layout-overlay');
-    const block_layout_image = document.querySelector('.block-layout-overlay-image');
-
-    if (block_layout == 1) {
-        block_layout_overlay.style.display = "flex";
-    } else {
-        block_layout_overlay.style.display = 'none';
+    if (block_layout || help) {
+        overlay.style.display = 'flex';
     }
 
     // Hide the overlay when the user clicks anywhere outside the overlay content
     window.addEventListener('click', (event) => {
-        if (event.target === block_layout_overlay) {
-            block_layout_overlay.style.display = 'none';
-        }
-    });
-
-    if (help) {
-
-    }
-
-    document.querySelector('.block-layout-overlay').addEventListener('click', function(event) {
-        if (event.target === this) {
-            <?php unset($_POST['block_layout']); ?>
-            this.style.display = 'none';
+        if (event.target === overlay) {
+            overlay.style.display = 'none';
         }
     });
 
 </script>
+
+<?php
+    if ($block_records === 'true') {
+        include("display_block_records.php");
+    }

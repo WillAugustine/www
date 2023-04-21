@@ -45,7 +45,7 @@
                 </form>
             </div>
         </div>";
-        $right_message = "<a href='visitor.php?id=$link&block_records' id='login-button'>Block Records</a>";
+        $right_message = "<a href='visitor.php?id=$link' id='login-button'>Block Records</a>";
         $title = "Saint Patrick Cemetery Locator";
 
     }
@@ -104,4 +104,12 @@
 </div>
 <hr>
 <br>
+
+<script>
+    function formSubmit(id)
+    {
+        document.forms[0].block_records.value = 'true';
+        document.forms[0].u
+    }
+</script>
 

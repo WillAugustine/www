@@ -14,6 +14,7 @@
     $maxY = $_POST['maxY'];
     $minY = $_POST['minY'];
     $imageWidth = $_POST['imageWidth'];
+    $imagePath = $_POST['imagePath'];
 
     echo "($minX, $minY) -> ($maxX, $maxY)<br>";
     // Insert the highlighting data into the Highlights table
@@ -35,9 +36,9 @@
         $age = empty($_SESSION["age"]) ? null : $_SESSION["age"];
         $undertaker = empty($_SESSION["undertaker"]) ? null : $_SESSION["undertaker"];
         $stmt = $conn->prepare("INSERT INTO ButteArchivesRecords
-            (block, lot, plot, name, dateOfDeath, age, undertaker, highlightID)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("siissssi", $block_num, $lot, $plot, $name, $DoD, $age, $undertaker, $highlightID);
+            (block, lot, plot, name, dateOfDeath, age, undertaker, blockImagePath, highlightID)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("siisssssi", $block_num, $lot, $plot, $name, $DoD, $age, $undertaker, $imagePath, $highlightID);
         if($stmt->execute()){
             $sql = "SELECT LAST_INSERT_ID()";
             $result = $conn->query($sql);

@@ -126,6 +126,8 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
+    width: 100%;
+    text-align: left;
 }
 
 /* Styling for hovering over drop down menu options elements submit buttons */
@@ -454,6 +456,7 @@
 .legend li {
     display:flex;
     align-items:center;
+    padding-bottom: 2px;
 }
 
 .legend .icon {
@@ -463,7 +466,9 @@
     margin-right:5px;
 }
 
-.block-layout-overlay {
+.visitor-overlay {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.75);
     position: fixed;
     top: 0;
     left: 0;
@@ -471,10 +476,70 @@
     height: 100%;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.75);
 }
 
-.block-layout-overlay-image {
+.visitor-overlay img {
+    display: flex;
     max-width: 90%;
     max-height: 90%;
+}
+
+.headstone {
+    position: absolute;
+    opacity: 50%;
+}
+
+.headstone-info {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+
+.headstone-info table {
+    margin: 0 auto;
+}
+
+/* Style the overlay */
+.selected-blocks-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+/* Style the overlay content */
+.selected-blocks-overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    width: 65%;
+}
+
+/* Style the image */
+.selected-blocks-overlay-content img {
+    max-width: 100%;
+}
+
+/* Style the arrows */
+#arrow {
+    cursor: pointer;
+    font-size: 36px;
+    margin: 0 40px;
+}
+
+.highlight {
+    position: absolute;
+    background-color: rgba(255, 255, 0, 0.3);
+    /* border: 2px solid red; */
 }
