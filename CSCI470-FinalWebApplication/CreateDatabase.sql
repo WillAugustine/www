@@ -25,12 +25,12 @@ COMMIT;
 
 START TRANSACTION;
 
-    CREATE TABLE `BlockData` (
-        `blockID` INT(3) NOT NULL UNIQUE,
-        `maxLat` DECIMAL(11, 8),
-        `minLat` DECIMAL(11, 8),
-        `maxLong` DECIMAL(11, 8),
-        `minLong` DECIMAL(11, 8)
+    CREATE TABLE `BlockCoordinates` (
+        `block` VARCHAR(255) NOT NULL UNIQUE,
+        `SE_lat` DECIMAL(11, 8),
+        `SE_long` DECIMAL(11, 8),
+        `NW_lat` DECIMAL(11, 8),
+        `NW_long` DECIMAL(11, 8)
     );
 
 COMMIT;
@@ -60,7 +60,9 @@ START TRANSACTION;
         `age` VARCHAR(8),
         `undertaker` VARCHAR(255),
         `highlightID` INT,
-        FOREIGN KEY (`highlightID`) REFERENCES `Highlights`(`id`)
+        `coordinateID` INT,
+        FOREIGN KEY (`highlightID`) REFERENCES `Highlights`(`ID`),
+        FOREIGN KEY (`block`) REFERENCES `BlockCoordinates`(`block`)
     );
 
 COMMIT;

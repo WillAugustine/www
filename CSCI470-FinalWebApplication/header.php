@@ -12,6 +12,8 @@
 </head>
 
 <?php
+    include("populate_block_coordinates.php");
+
     $visitor = isset($_SESSION['visitor']) ? $_SESSION['visitor'] : false;
 
     if ($visitor) {

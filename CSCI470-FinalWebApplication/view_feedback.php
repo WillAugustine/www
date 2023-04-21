@@ -3,15 +3,15 @@
 
     include_once('header.php');
 
-    define("DB_SERVER", "localhost");
-    define("DB_USER", "ButteArchives");
-    define("DB_PASSWORD", 'password');
-    define("DB_DATABASE", "CemeteryLocatorApplication");
+    $db_server = "localhost";
+    $db_username = "ButteArchives";
+    $db_password= "password";
+    $db_database= "CemeteryLocatorApplication";
     
     unset($_SESSION['visitor_name']);
 
     // connect to the database
-    $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
+    $conn = new mysqli( $db_server, $db_username, $db_password, $db_database );
     if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );
 
 ?>

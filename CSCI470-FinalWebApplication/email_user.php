@@ -22,13 +22,13 @@
     if (isset($_SESSION['user_link'])) {
         $user_link = $_SESSION['user_link'];
 
-        define("DB_SERVER", "localhost");
-        define("DB_USER", "ButteArchives");
-        define("DB_PASSWORD", 'password');
-        define("DB_DATABASE", "CemeteryLocatorApplication");
+        $db_server = "localhost";
+        $db_username = "ButteArchives";
+        $db_password= "password";
+        $db_database= "CemeteryLocatorApplication";
 
         // connect to the database
-        $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
+        $conn = new mysqli( $db_server, $db_username, $db_password, $db_database );
         if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );
 
         // Select data with block, lot, polt, name from ButteArchivesRecords
@@ -99,7 +99,7 @@
             <th>Date of visit</th>
         </tr>
             <td><?php echo $user_email ?></td>
-            <td><?php echo date('m-d-Y', strtotime($user_DoV)) ?></td>
+            <td><?php echo $user_DoV ?></td>
     </table>
 
     <h3>Headstones they're visiting:</h3>

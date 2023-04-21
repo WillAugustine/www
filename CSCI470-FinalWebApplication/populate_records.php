@@ -1,13 +1,13 @@
 <?php
 
     session_start();
-    define("DB_SERVER", "localhost");
-    define("DB_USER", "ButteArchives");
-    define("DB_PASSWORD", 'password');
-    define("DB_DATABASE", "CemeteryLocatorApplication");
+    $db_server = "localhost";
+    $db_username = "ButteArchives";
+    $db_password= "password";
+    $db_database= "CemeteryLocatorApplication";
 
     // Connect to the database
-    $conn = new mysqli( DB_SERVER, DB_USER, DB_PASSWORD, DB_DATABASE );
+    $conn = new mysqli( $db_server, $db_username, $db_password, $db_database );
     if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );
     $maxX = $_POST['maxX'];
     $minX = $_POST['minX'];
@@ -26,6 +26,8 @@
         echo $highlightID . "<br>";
         $name = empty($_SESSION["name"]) ? null : $_SESSION["name"];
         $block = empty($_SESSION["block"]) ? null : $_SESSION["block"];
+        preg_match('/^(\d+)/', $block, $strippedBlock);
+        $block_num = $strippedBlock[1];
         echo "block: '" . $block . "'<br>";
         $lot = empty($_SESSION["lot"]) ? null : $_SESSION["lot"];
         $plot = empty($_SESSION["plot"]) ? null : $_SESSION["plot"];
@@ -35,7 +37,7 @@
         $stmt = $conn->prepare("INSERT INTO ButteArchivesRecords
             (block, lot, plot, name, dateOfDeath, age, undertaker, highlightID)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("siissssi", $block, $lot, $plot, $name, $DoD, $age, $undertaker, $highlightID);
+        $stmt->bind_param("siissssi", $block_num, $lot, $plot, $name, $DoD, $age, $undertaker, $highlightID);
         if($stmt->execute()){
             $sql = "SELECT LAST_INSERT_ID()";
             $result = $conn->query($sql);
