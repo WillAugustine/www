@@ -27,8 +27,9 @@
             </button>
             <div class='dropdown-content' style='left:0;'>
                 <a href='visitor.php?id=$link'>View Map</a>
-                <a href='visitor.php?id=$link&feedback'>Give Feedback</a>
                 <a href='visitor.php?id=$link&block_layout'>View Block Layout</a>
+                <a href='visitor.php?id=$link&feedback'>Give Feedback</a>
+                <a href='visitor.php?id=$link&help'>Help</a>
             </div>
         </div>";
         $right_message = "<a href='visitor.php?id=$link&block_image' id='login-button'>Block Record</a>";

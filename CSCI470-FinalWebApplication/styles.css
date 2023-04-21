@@ -382,13 +382,51 @@
 .cemetery-image {
     max-width: 90%;
     max-height: 90%;
+    display: block;
+    margin: 0 auto;
 }
 
 #cemetery-container {
     position: relative;
+    display: inline-block;
+}
+
+.map-container {
+    display: inline-block;
+}
+
+.cemetery-map {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: auto;
-    margin-bottom: 30px;
+}
+
+.cemetery-map h2 {
+    text-align: center;
+}
+
+.legend {
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+}
+
+.legend ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.legend li {
+    display:flex;
+    align-items:center;
+}
+
+.legend .icon {
+    display:inline-block;
+    width:20px;
+    height:20px;
+    margin-right:5px;
 }
