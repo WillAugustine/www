@@ -34,7 +34,7 @@
                 <a href='visitor.php?id=$link&help'>Help</a>
             </div>
         </div>";
-        $right_message = "<a href='visitor.php?id=$link&block_image' id='login-button'>Block Record</a>";
+        $right_message = "<a href='visitor.php?id=$link&block_image' id='login-button'>Block Records</a>";
         $title = "Saint Patrick Cemetery Locator";
 
     }

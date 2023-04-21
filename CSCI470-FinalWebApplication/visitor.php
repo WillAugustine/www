@@ -90,7 +90,7 @@
 
         // Query the BlockCoordinates, HeadstonesForLinks, and ButteArchivesRecords tables to get the headstone data for the user
         if ($stmt = $conn->prepare(
-            "SELECT bc.*
+            "SELECT bc.*, bar.block, bar.lot, bar.plot
             FROM BlockCoordinates bc
             JOIN ButteArchivesRecords bar ON bc.block = bar.block
             JOIN HeadstonesForLinks hfl ON bar.ID = hfl.headstoneID_1 OR bar.ID = hfl.headstoneID_2 OR bar.ID = hfl.headstoneID_3 OR bar.ID = hfl.headstoneID_4 OR bar.ID = hfl.headstoneID_5
@@ -106,6 +106,9 @@
                     'SE_long' => $row['SE_long'],
                     'NW_lat' => $row['NW_lat'],
                     'NW_long' => $row['NW_long'],
+                    'block' => $row['block'],
+                    'lot' => $row['lot'],
+                    'plot' => $row['plot']
                 ];
             }
         } else {
@@ -143,15 +146,6 @@
     // Get the cemetery container and image elements
     const cemeteryContainer = document.querySelector('#cemetery-container');
     const cemeteryImage = document.querySelector('#cemetery-image');
-
-    // Define a debounce function
-    function debounce(func, wait) {
-        let timeout;
-        return function() {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, arguments), wait);
-        };
-    }
 
     function updateHeadstones() {
         
@@ -197,6 +191,23 @@
             headstoneElement.style.backgroundColor = headstoneColors[index % headstoneColors.length];
             headstoneElement.style.opacity = 0.5;
 
+            const headstoneInfoElement = document.createElement('div');
+            // headstoneInfoElement.classList.add('block');
+            headstoneInfoElement.textContent = `Block: ${headstone.block}, Lot: ${headstone.lot}, Plot: ${headstone.plot}`;
+            headstoneInfoElement.style.display = 'none';
+
+            // Set the CSS properties for the headstoneInfoElement
+            headstoneInfoElement.style.position = 'absolute';
+            headstoneInfoElement.style.bottom = (height + 10) + 'px';
+            headstoneInfoElement.style.left = '50%';
+            headstoneInfoElement.style.transform = 'translateX(-50%)';
+            headstoneInfoElement.style.backgroundColor = '#fff';
+            headstoneInfoElement.style.padding = '5px 10px';
+            headstoneInfoElement.style.borderRadius = '5px';
+            headstoneInfoElement.style.boxShadow = '0 2px 4px rgba(0,0,0,.2)';
+
+
+            headstoneElement.appendChild(headstoneInfoElement);
             // Append the headstone element to the cemetery container
             cemeteryContainer.appendChild(headstoneElement);
         });
@@ -205,4 +216,14 @@
 
     // Add an event listener for the resize event on the window object
     window.addEventListener('resize', updateHeadstones);
+
+    // Add an event listener for the mouseover event on the headstoneElement
+    headstoneElement.addEventListener('mouseover', () => {
+        headstoneInfoElement.style.display = 'block';
+    });
+
+    // Add an event listener for the mouseout event on the headstoneElement
+    headstoneElement.addEventListener('mouseout', () => {
+        headstoneInfoElement.style.display = 'none';
+    });
 </script>
