@@ -21,22 +21,24 @@
     $db_password= "password";
     $db_database= "CemeteryLocatorApplication";
 
+    $block_layout = false;
+    $help = false; 
+
     if (isset($_GET['id'])) {
 
         if (isset($_REQUEST['feedback'])) {
             exit();
         }
 
-        if (isset($_REQUEST['block_image'])) {
-
+        if (isset($_REQUEST['block_records'])) {
         }
 
-        if (isset($_REQUEST['block_layout'])) {
-
+        if (isset($POST['block_layout'])) {
+            $block_layout = true;
         }
 
-        if (isset($REQUEST['help'])) {
-
+        if (isset($POST['help'])) {
+            $help = true;
         }
 
         // connect to the database
@@ -115,6 +117,20 @@
             die("Error: " . $conn->error);
         }
     };
+    echo "<pre>";
+    echo "POST: <br>";
+    print_r($_POST);
+    echo "<br>GET: <br>";
+    print_r($_GET);
+    echo "<br>REQUEST: <br>";
+    print_r($_REQUEST);
+    echo "<br>SESSION: <br>";
+    print_r($_SESSION);
+    echo "</pre><br>";
+    $block_layout_text = isset($_POST['block_layout']) ? $_POST['block_layout'] : "false";
+    $help_text = $help ? "true" : "false";
+    echo "block_layout = $block_layout_text <br>";
+    echo "help = $help_text <br>";
 ?>
 <div class="cemetery-map">
     <h2>Welcome, <?php echo htmlspecialchars($user_firstName) . ' ' . htmlspecialchars($user_lastName) ?>!</h2>
@@ -136,7 +152,14 @@
     </div>
 </div>
 
+<!-- <div class="block-layout-overlay">
+    <img src="images/Block_Layout.jpg" alt="Block Layout" class="block-layout-overlay-image">
+</div> -->
+
 <script>
+    let block_layout =  <?php echo json_encode($block_layout); ?>;
+    let help = <?php echo json_encode($help); ?>;
+
     // Define an array of headstones with their latitude and longitude
     const headstones = <?php echo json_encode($headstones); ?>;
 
@@ -226,4 +249,32 @@
     headstoneElement.addEventListener('mouseout', () => {
         headstoneInfoElement.style.display = 'none';
     });
+
+    const block_layout_overlay = document.querySelector('.block-layout-overlay');
+    const block_layout_image = document.querySelector('.block-layout-overlay-image');
+
+    if (block_layout == 1) {
+        block_layout_overlay.style.display = "flex";
+    } else {
+        block_layout_overlay.style.display = 'none';
+    }
+
+    // Hide the overlay when the user clicks anywhere outside the overlay content
+    window.addEventListener('click', (event) => {
+        if (event.target === block_layout_overlay) {
+            block_layout_overlay.style.display = 'none';
+        }
+    });
+
+    if (help) {
+
+    }
+
+    document.querySelector('.block-layout-overlay').addEventListener('click', function(event) {
+        if (event.target === this) {
+            <?php unset($_POST['block_layout']); ?>
+            this.style.display = 'none';
+        }
+    });
+
 </script>

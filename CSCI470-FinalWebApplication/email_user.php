@@ -15,7 +15,7 @@
     }
 
     if (array_key_exists('incorrect_info', $_POST)) {
-        echo "Oh no!";
+        include("modify_information.php");
         exit();
     }
 

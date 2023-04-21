@@ -28,13 +28,24 @@
                 </div>
             </button>
             <div class='dropdown-content' style='left:0;'>
-                <a href='visitor.php?id=$link'>View Map</a>
-                <a href='visitor.php?id=$link&block_layout'>View Block Layout</a>
-                <a href='visitor.php?id=$link&feedback'>Give Feedback</a>
-                <a href='visitor.php?id=$link&help'>Help</a>
+                <form action='visitor.php?id=$link' method='post'>
+                    <input type='submit' value='View Map'>
+                </form>
+                <form action='visitor.php?id=$link' method='post'>
+                    <input type='hidden' name='block_layout' value='true'>
+                    <input type='submit' value='View Block Layout'>
+                </form>
+                <form action='visitor.php?id=$link' method='post'>
+                    <input type='hidden' name='feedback' value='true'>
+                    <input type='submit' value='Give Feedback'>
+                </form>
+                <form action='visitor.php?id=$link' method='post'>
+                    <input type='hidden' name='help' value='true'>
+                    <input type='submit' value='Help'>
+                </form>
             </div>
         </div>";
-        $right_message = "<a href='visitor.php?id=$link&block_image' id='login-button'>Block Records</a>";
+        $right_message = "<a href='visitor.php?id=$link&block_records' id='login-button'>Block Records</a>";
         $title = "Saint Patrick Cemetery Locator";
 
     }

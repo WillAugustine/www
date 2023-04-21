@@ -98,7 +98,7 @@
             ctx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
 
             // Set the fill style to a semi-transparent yellow color
-            ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
+            ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
 
             // Draw a filled rectangle on the canvas using the start and end coordinates
             ctx.fillRect(highlightStartX, highlightStartY, highlightEndX - highlightStartX, highlightEndY - highlightStartY);
@@ -119,7 +119,7 @@
             ctx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
 
             // Set the fill style to a semi-transparent yellow color
-            ctx.fillStyle = 'rgba(255, 255, 0, 0.5)';
+            ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
 
             // Draw a filled rectangle on the canvas using the start coordinates and current cursor position
             ctx.fillRect(highlightStartX, highlightStartY, event.offsetX - highlightStartX, event.offsetY - highlightStartY);
@@ -153,14 +153,14 @@
 
     // Show the overlay when the page loads
     window.addEventListener('load', () => {
-    overlay.style.display = 'block';
+        overlay.style.display = 'block';
     });
 
     // Hide the overlay when the user clicks anywhere outside the overlay content
     window.addEventListener('click', (event) => {
-    if (event.target === overlay) {
-        overlay.style.display = 'none';
-    }
+        if (event.target === overlay) {
+            overlay.style.display = 'none';
+        }
     });
 
     // Hide the overlay when the user clicks the "OK" button
