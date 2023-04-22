@@ -32,7 +32,8 @@
             $sql = "SELECT dateOfVisit, CONCAT(firstName, ' ', lastName) AS visitor, headstoneFound, recommend, useAgain, comments FROM Feedback INNER JOIN Users ON Feedback.userID = Users.ID ORDER BY dateOfVisit DESC LIMIT 10";
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) { ?>
+                while($row = $result->fetch_assoc()) { 
+                    print_r($row); ?>
                     <tr>
                         <td id="date"> <?php echo date('m-d-Y', strtotime($row["dateOfVisit"])) ?> </td>
                         <td id="name"> <?php echo $row["visitor"] ?> </td>

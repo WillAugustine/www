@@ -2,7 +2,6 @@
 <?php
 
     function createNewSession() {
-        session_start();
 
         session_destroy();
         session_unset();
@@ -13,13 +12,10 @@
         $_SESSION['visitor'] = true;
         $_SESSION['user_link'] = $_GET['id'];
     }
-    
-    $feedback_complete = isset($_SESSION['feedback_complete']) ? $_SESSION['feedback_complete'] : false;
+    session_start();
 
     createNewSession();
 
-    $_SESSION['feedback_complete'] = $feedback_complete;
-    
     include('header.php');
 
     $user_link = $_SESSION['user_link'];

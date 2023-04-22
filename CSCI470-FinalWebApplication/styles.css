@@ -556,3 +556,35 @@ input[type="submit"]#login-button {
     position: absolute;
     background-color: rgba(255, 255, 0, 0.3);
 }
+
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feedback-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.yes-no-buttons {
+    display: flex;
+}
+
+.yes-no-buttons button {
+    width: 50px;
+    height: 30px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.selected {
+    background-color: lightblue;
+}
+
+textarea[name="comments"] {
+    width: 300px;
+    height: 100px;
+}
