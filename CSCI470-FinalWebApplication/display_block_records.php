@@ -6,6 +6,8 @@
     $db_password= "password";
     $db_database= "CemeteryLocatorApplication";
 
+    $user_link = isset($_SESSION['user_link']) ? $_SESSION['user_link'] : "";
+
     // Connect to the database
     $conn = new mysqli( $db_server, $db_username, $db_password, $db_database );
     if ( $conn->connect_error ) exit( 'connection failed: ' . $conn->connect_error );

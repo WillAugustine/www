@@ -34,7 +34,7 @@
             exit();
         }
 
-        $block_records = isset($_REQUEST['block_records']) ? 'true' : 'false';
+        $block_records = isset($_POST['block_records']) ? 'true' : 'false';
         
         $block_layout = isset($_POST['block_layout']) ? 'true' : 'false';
 

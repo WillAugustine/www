@@ -21,6 +21,15 @@
     font-size: 16px;
     font-weight: bolder;
     cursor: pointer;
+    vertical-align: bottom;
+    position: relative;
+}
+
+input[type="submit"]#login-button {
+    box-sizing: border-box;
+    height: 46px;
+    line-height: 16px;
+    margin-top: 10%;
 }
 
 /* Styling for header */
