@@ -14,7 +14,12 @@
         $_SESSION['user_link'] = $_GET['id'];
     }
     
+    $feedback_complete = isset($_SESSION['feedback_complete']) ? $_SESSION['feedback_complete'] : false;
+
     createNewSession();
+
+    $_SESSION['feedback_complete'] = $feedback_complete;
+    
     include('header.php');
 
     $user_link = $_SESSION['user_link'];
@@ -31,7 +36,7 @@
     if (isset($_GET['id'])) {
 
         if (isset($_REQUEST['feedback'])) {
-            exit();
+            header("Location: provide_feedback.php");
         }
 
         $block_records = isset($_POST['block_records']) ? 'true' : 'false';

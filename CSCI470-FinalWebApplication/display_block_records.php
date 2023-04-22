@@ -45,11 +45,11 @@
     <title>Block Record Images</title>
 </head>
 <body>
-    <!-- Create a button to open the overlay
+    <!-- Create a button to open the blockRecordOverlay
     <button onclick="openOverlay(0)">View Block Record Images</button> -->
 
-    <!-- Create the overlay -->
-    <div class="selected-blocks-overlay" onclick="closeOverlay()">
+    <!-- Create the blockRecordOverlay -->
+    <div class="selected-blocks-overlay">
         <div class="selected-blocks-overlay-content">
             <!-- Display the headstone name -->
             <h1 id="headstone-name"></h1>
@@ -75,27 +75,29 @@
         // Store the current image index
         var currentImageIndex = 0;
 
-        // Function to open the overlay and display the first image
-        function openOverlay(index) {
-            currentImageIndex = index;
-            document.getElementById('headstone-name').innerHTML = images[index].name;
-            document.getElementById('block-record-image').src = images[index].blockImagePath;
+        const blockRecordOverlay = document.querySelector('.selected-blocks-overlay');
+
+        // Function to open the blockRecordOverlay and display the first image
+        function openOverlay() {
+            document.getElementById('headstone-name').innerHTML = images[currentImageIndex].name;
+            document.getElementById('block-record-image').src = images[currentImageIndex].blockImagePath;
 
             // Calculate the position and size of the highlight
             var imageWidth = document.getElementById('block-record-image').clientWidth;
-            var scale = imageWidth / images[index].imageWidth;
+            var scale = imageWidth / images[currentImageIndex].imageWidth;
             var highlight = document.querySelector('.highlight');
-            highlight.style.left = (images[index].minX * scale) + 'px';
-            highlight.style.top = (images[index].minY * scale) + 'px';
-            highlight.style.width = ((images[index].maxX - images[index].minX) * scale) + 'px';
-            highlight.style.height = ((images[index].maxY - images[index].minY) * scale) + 'px';
+            highlight.style.display = "block";
+            highlight.style.left = (images[currentImageIndex].minX * scale) + 'px';
+            highlight.style.top = (images[currentImageIndex].minY * scale) + 'px';
+            highlight.style.width = ((images[currentImageIndex].maxX - images[currentImageIndex].minX) * scale) + 'px';
+            highlight.style.height = ((images[currentImageIndex].maxY - images[currentImageIndex].minY) * scale) + 'px';
 
-            document.querySelector('.selected-blocks-overlay').style.display = 'block';
+            blockRecordOverlay.style.display = 'block';
         }
 
-        // Function to close the overlay
+        // Function to close the blockRecordOverlay
         function closeOverlay() {
-            document.querySelector('.selected-blocks-overlay').style.display = 'none';
+            blockRecordOverlay.style.display = 'none';
         }
 
         // Function to display the previous image
@@ -104,7 +106,7 @@
             
             if (currentImageIndex > 0) {
                 currentImageIndex--;
-                openOverlay(currentImageIndex);
+                openOverlay();
             }
         }
 
@@ -114,16 +116,25 @@
             
             if (currentImageIndex < images.length - 1) {
                 currentImageIndex++;
-                openOverlay(currentImageIndex);
+                openOverlay();
             }
         }
         
-        // Open the overlay when the file is loaded
+        // Open the blockRecordOverlay when the file is loaded
         window.onload = function() {
-            openOverlay(0);
+            openOverlay();
+            openOverlay();
         };
 
-        window.addEventListener('resize', openOverlay(currentImageIndex));
+        window.addEventListener('resize', () => {
+            openOverlay();
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === blockRecordOverlay) {
+                closeOverlay();
+            }
+        });
     </script>
 </body>
 </html>
