@@ -1,0 +1,21 @@
+body{
+    background: grey;
+}
+.title-wrapper{
+ display: flex; 
+ flex-direction: row; 
+ align-items: center; 
+ font-size: 35px; 
+ text-align: center;
+}
+.title-wrapper{
+    display: flex; 
+    flex-direction: row; 
+    align-items: right; 
+    font-size: 35px;
+} 
+.info-wrapper input{
+    font-size: 20px;
+    background: white;
+    border-radius: 15px;
+}

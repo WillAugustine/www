@@ -1,0 +1,27 @@
+body{
+    text-align: center;
+    align-items: center;
+    background: grey;
+}
+.lead{
+    display: flex;
+    flex-direction: column;
+
+}
+.lead p {
+    font-size: 20px;
+}
+.lead h2{
+    font-size: 30px;
+}
+.lead button{
+    font: bolder;
+    font-family: arial, sans-serif;
+    background: none!important;
+    border: none;
+    color: blue;
+    padding: 0!important;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 30px;
+}

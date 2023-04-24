@@ -1,0 +1,13 @@
+body{
+    background:grey;
+}
+.header{
+justify-content: center;
+display: flex;
+flex-direction: row;
+font-size: 30px;
+align-items: center;
+text-align: center;
+display: flex; 
+flex-direction: row;
+}
